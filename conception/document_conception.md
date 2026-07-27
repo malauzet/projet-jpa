@@ -93,7 +93,7 @@ erDiagram
         varchar id PK
         varchar nom
         varchar url
-        decimal(3,1) rating
+        decimal rating
         text plot
         int annee_debut
         int annee_fin
@@ -125,7 +125,7 @@ erDiagram
         varchar identite
         varchar url
         date date_naissance
-        decimal(3,2) taille
+        decimal taille
         int lieu_naissance_id FK
     }
 
