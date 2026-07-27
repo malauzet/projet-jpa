@@ -93,7 +93,7 @@ erDiagram
         varchar id PK
         varchar nom
         varchar url
-        double rating
+        decimal(3,1) rating
         text plot
         int annee_debut
         int annee_fin
@@ -125,7 +125,7 @@ erDiagram
         varchar identite
         varchar url
         date date_naissance
-        double taille
+        decimal(3,2) taille
         int lieu_naissance_id FK
     }
 
@@ -165,7 +165,7 @@ erDiagram
     PERSONNE ||--o{ FILM_REALISATEUR : realise
 ```
 
-## Choix de conception
+## 4. Choix de conception
 
 ### Clés primaires
 
@@ -193,10 +193,10 @@ Deux tables de jonction, sans attribut propre, clé primaire composite :
 ### Types
 
 - `date_naissance` en `date` (LocalDate cote JPA) conformément à l'exigence du sujet.
-- `rating` en `double`, la conversion virgule/point se fait au parsing JSON → Java, pas au niveau du schéma.
+- `rating` en `decimal`, évite les problèmes d'arrondi flottant sur les comparaisons.
 - Toutes les colonnes texte "libres" (nom, url, lieuTournage) sont en `VARCHAR(255)` par défaut, sauf celles dont la taille réelle a été vérifiée dans le JSON source (`identite VARCHAR(150)`, `character_name VARCHAR(150)`).
 
-## 4. Modèle physique de données
+## 5. Modèle physique de données
 
 SGBD cible : MariaDB (XAMPP), moteur InnoDB, charset utf8mb4.
 
