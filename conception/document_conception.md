@@ -7,15 +7,15 @@ Source de données retenue : `films.json` (JSON global, parsing avec Jackson).
 Le fichier `films.json` contient 2748 films. Analyse de la structure :
 
 - **Entités metier identifiées dans le sujet** : lieu de naissance, pays, langue, genre.
-- **Anomalies detectées dans les données** (à traiter au parsing, tache n°3) :
-  - 38 `id` de films dupliqués (ex. `tt0182576`) -> déduplication à prevoir avant insertion, puisque `id` devient cle primaire.
-  - 547 `rating` au format français (virgule au lieu du point decimal, ex. `"6,1"`).
-  - 102 `anneeSortie` sous forme de plage (ex. `"1969-1970"`) au lieu d'une année unique -> modelisé en `anneeDebut`/`anneeFin`.
+- **Anomalies détectées dans les données** (à traiter au parsing, tache n°3) :
+  - 38 `id` de films dupliqués (ex. `tt0182576`) -> déduplication à prévoir avant insertion, puisque `id` devient cle primaire.
+  - 547 `rating` au format français (virgule au lieu du point decimal, ex : `"6,1"`).
+  - 102 `anneeSortie` sous forme de plage (ex. `"1969-1970"`) au lieu d'une année unique → modélise en `anneeDebut`/`anneeFin`.
   - Champs optionnels : `langue` absent sur 19 entrées, `rating` sur 46, `pays` sur 18, `lieuTournage` sur 589.
   - Éspaces parasites en fin de chaine sur `dateNaissance` et `lieuNaissance` -> `trim()` au parsing.
-- **Acteurs et realisateurs** : même structure de données (`id`, `identite`, `url`, `naissance`), et une même personne peut apparaitre dans les deux rôles selon les films. Modelisées comme une seule entité `Personne`.
-- **`castingPrincipal`** : duplique les mêmes personnes déjà présentes dans `roles` (sans le nom du personnage) -> ignore au parsing, non repris dans le modèle.
-- **`lieuTournage`** : structure ville/etatDept/pays propre à chaque film, sans contrainte d'unicité demandée et sans reutilisation entre films -> modelisé en attributs embarques dans `Film`, pas en entité à part.
+- **Acteurs et réalisateurs** : même structure de données (`id`, `identite`, `url`, `naissance`), et une même personne peut apparaitre dans les deux rôles selon les films. Modélisées comme une seule entité `Personne`.
+- **`castingPrincipal`** : duplique les mêmes personnes déjà présentes dans `roles` (sans le nom du personnage) → ignore au parsing, non repris dans le modèle.
+- **`lieuTournage`** : structure ville/etatDept/pays propre à chaque film, sans contrainte d'unicité demandée et sans réutilisation entre films → modélise en attributs embarqués dans `Film`, pas en entité à part.
 
 ## 2. Diagramme de classes
 
@@ -80,9 +80,9 @@ classDiagram
 ### Justifications
 
 - **`Personne` unifiée** (acteurs + réalisateurs) : évite la duplication et les conflits d'identité quand une même personne cumule les deux roles. `taille` (height) reste `null` pour quelqu'un qui n'a jamais été acteur.
-- **`Role` en classe association** : la relation `Film`-`Personne` pour le casting porte une donnée (`characterName`), d'où une classe intermediaire plutôt qu'une simple association many-to-many.
-- **Relation directe `Film`-`Personne` pour les réalisateurs** : pas d'attribut à porter, donc many-to-many simple, sans passer par `Role`.
-- **Cardinalites optionnelles** (`Pays`, `Langue`, `LieuNaissance` en 0..1) : cohérentes avec les champs manquants relevés en section 1.
+- **`Role` en classe association** : la relation `Film`-`Personne` pour le casting porte une donnée (`characterName`), d'où une classe intermédiaire plutôt qu'une simple association many to many.
+- **Relation directe `Film`-`Personne` pour les réalisateurs** : pas d'attribut à porter, donc many to many simple, sans passer par `Role`.
+- **Cardinalités optionnelles** (`Pays`, `Langue`, `LieuNaissance` en 0..1) : cohérentes avec les champs manquants relevés en section 1.
 - **`anneeDebut`/`anneeFin`** plutôt qu'un `anneeSortie` unique : gère les series sans casser le typage `Integer`.
 
 ## 3. Modèle entité-association
@@ -169,7 +169,7 @@ erDiagram
 
 ### Clés primaires
 
-- `FILM.id` et `PERSONNE.id` : clés naturelles (identifiants IMDb, ex. `tt0082449`, `nm0000001`) en `VARCHAR(15)`, pas de génération automatique. Les 38 doublons détectes dans le JSON sont à dédupliquer au parsing (tâche n°3) puisque l'id devient PK.
+- `FILM.id` et `PERSONNE.id` : clés naturelles (identifiants IMDb, ex : `tt0082449`, `nm0000001`) en `VARCHAR(15)`, pas de génération automatique. Les 38 doublons détectés dans le JSON sont à dédupliquer au parsing (tâche n°3) puisque l'id devient PK.
 - `PAYS`, `LANGUE`, `GENRE`, `LIEU_NAISSANCE`, `ROLE` : clés techniques `INT AUTO_INCREMENT`, l'id n'existe pas dans la source.
 
 ### Contraintes d'unicité (UK)
@@ -182,19 +182,19 @@ Deux tables de jonction, sans attribut propre, clé primaire composite :
 
 - `FILM_GENRE` (film_id, genre_id).
 - `FILM_REALISATEUR` (film_id, personne_id).
-  `ROLE` n'est pas une simple table de jonction : elle porte `character_name`, donc elle à sa propre clé technique (`id INT AUTO_INCREMENT`) et se modèlise comme une entité à part entière plutôt qu'une table film_x_personne composite.
+  `ROLE` n'est pas une simple table de jonction : elle porte `character_name`, donc elle a sa propre clé technique (`id INT AUTO_INCREMENT`) et se modélise comme une entité à part entière plutôt qu'une table film_x_personne composite.
 
 ### Nullabilité (FK optionnelles)
 
 - `FILM.pays_id` et `FILM.langue_id` : nullable (0..1 cote FILM), 18 et 19 entrées du JSON n'ont pas cette info.
-- `PERSONNE.lieu_naissance_id` : nullable, certaines personnes n'ont pas de lieu de naissance renseigne.
+- `PERSONNE.lieu_naissance_id` : nullable, certaines personnes n'ont pas de lieu de naissance renseigné.
 - `FILM.ville_tournage` / `etat_dept_tournage` / `pays_tournage` : tous nullable en bloc (attributs embarqués), absents sur 589/2748 films.
 
 ### Types
 
 - `date_naissance` en `date` (LocalDate cote JPA) conformément à l'exigence du sujet.
-- `rating` en `double`, la conversion virgule/point se fait au parsing JSON -> Java, pas au niveau du schéma.
-- Toutes les colonnes texte "libres" (nom, url, lieuTournage) sont en `VARCHAR(255)` par défaut, sauf celles dont la taille réelle a été verifiée dans le JSON source (`identite VARCHAR(150)`, `character_name VARCHAR(150)`).
+- `rating` en `double`, la conversion virgule/point se fait au parsing JSON → Java, pas au niveau du schéma.
+- Toutes les colonnes texte "libres" (nom, url, lieuTournage) sont en `VARCHAR(255)` par défaut, sauf celles dont la taille réelle a été vérifiée dans le JSON source (`identite VARCHAR(150)`, `character_name VARCHAR(150)`).
 
 ## 4. Modèle physique de données
 
@@ -256,7 +256,7 @@ CREATE TABLE personne (
     identite            VARCHAR(150) NOT NULL,
     url                 VARCHAR(255),
     date_naissance      DATE,
-    taille              DOUBLE,
+    taille              DECIMAL(3,2),
     lieu_naissance_id   INT,
 
     CONSTRAINT fk_personne_lieu_naissance
@@ -269,7 +269,7 @@ CREATE TABLE film (
     id                      VARCHAR(15) PRIMARY KEY,  -- identifiant IMDb, ex. tt0082449
     nom                     VARCHAR(255) NOT NULL,
     url                     VARCHAR(255),
-    rating                  DOUBLE,
+    rating                  DECIMAL(3,1),
     plot                    TEXT,
     annee_debut             INT,
     annee_fin               INT,
@@ -346,7 +346,7 @@ CREATE TABLE film_realisateur (
         REFERENCES personne(id)
 );
 
--- Maintenant que la base et les tables sont créées
+-- Maintenant que la base et les tables sont créées,
 -- on réactive la vérification des clés étrangères.
 SET FOREIGN_KEY_CHECKS = 1;
 ```
