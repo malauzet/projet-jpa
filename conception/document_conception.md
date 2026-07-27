@@ -14,8 +14,8 @@ Le fichier `films.json` contient 2748 films. Analyse de la structure :
   - Champs optionnels : `langue` absent sur 19 entrées, `rating` sur 46, `pays` sur 18, `lieuTournage` sur 589.
   - Éspaces parasites en fin de chaine sur `dateNaissance` et `lieuNaissance` -> `trim()` au parsing.
 - **Acteurs et réalisateurs** : même structure de données (`id`, `identite`, `url`, `naissance`), et une même personne peut apparaitre dans les deux rôles selon les films. Modélisées comme une seule entité `Personne`.
-- **`castingPrincipal`** : duplique les mêmes personnes déjà présentes dans `roles` (sans le nom du personnage) → ignore au parsing, non repris dans le modèle.
 - **`lieuTournage`** : structure ville/etatDept/pays propre à chaque film, sans contrainte d'unicité demandée et sans réutilisation entre films → modélise en attributs embarqués dans `Film`, pas en entité à part.
+- - **`castingPrincipal`** : sert à déterminer `Role.principal` au parsing (`true` si l'id de l'acteur apparaît dans `castingPrincipal` pour ce film). Pas repris comme structure à part — les données de casting restent centralisées dans `roles`/`ROLE`. Attention : l'ordre de `castingPrincipal` ne correspond pas à celui de `roles` (vérifié sur l'ensemble du jeu de données, seulement 29/2748 films où les N premiers acteurs de`roles` correspondent à `castingPrincipal` dans le même ordre), le flag doit être déterminé par correspondance d'`id`, jamais par position.
 
 ## 2. Diagramme de classes
 
@@ -66,6 +66,7 @@ classDiagram
     class Role {
         +Long id
         +String characterName
+        +Boolean principal
     }
 
     Film "0..1" --> "*" Pays : origine
@@ -137,6 +138,7 @@ erDiagram
     ROLE {
         int id PK
         varchar character_name
+        boolean principal
         varchar film_id FK
         varchar personne_id FK
     }
@@ -195,6 +197,7 @@ Deux tables de jonction, sans attribut propre, clé primaire composite :
 - `date_naissance` en `date` (LocalDate cote JPA) conformément à l'exigence du sujet.
 - `rating` en `decimal`, évite les problèmes d'arrondi flottant sur les comparaisons.
 - Toutes les colonnes texte "libres" (nom, url, lieuTournage) sont en `VARCHAR(255)` par défaut, sauf celles dont la taille réelle a été vérifiée dans le JSON source (`identite VARCHAR(150)`, `character_name VARCHAR(150)`).
+- `ROLE.principal` en `boolean` distingue les acteurs du `castingPrincipal` JSON de ceux présents uniquement dans `roles`.
 
 ## 5. Modèle physique de données
 
@@ -304,6 +307,7 @@ CREATE INDEX idx_film_annee_debut ON film(annee_debut);
 CREATE TABLE role (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     character_name  VARCHAR(150),
+    principal       BOOLEAN NOT NULL DEFAULT FALSE,
     film_id         VARCHAR(15) NOT NULL,
     personne_id     VARCHAR(15) NOT NULL,
 
