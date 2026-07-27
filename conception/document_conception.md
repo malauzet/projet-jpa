@@ -7,15 +7,15 @@ Source de données retenue : `films.json` (JSON global, parsing avec Jackson).
 Le fichier `films.json` contient 2748 films. Analyse de la structure :
 
 - **Entités metier identifiées dans le sujet** : lieu de naissance, pays, langue, genre.
-- **Anomalies détectées dans les données** (à traiter au parsing, tache n°3) :
+- **Anomalies détectées dans les données** :
   - 38 `id` de films dupliqués (ex. `tt0182576`) -> déduplication à prévoir avant insertion, puisque `id` devient cle primaire.
   - 547 `rating` au format français (virgule au lieu du point decimal, ex : `"6,1"`).
-  - 102 `anneeSortie` sous forme de plage (ex. `"1969-1970"`) au lieu d'une année unique → modélise en `anneeDebut`/`anneeFin`.
+  - 102 `anneeSortie` sous forme de plage (ex : `"1969-1970"`) au lieu d'une année unique → modélise en `anneeDebut`/`anneeFin`.
   - Champs optionnels : `langue` absent sur 19 entrées, `rating` sur 46, `pays` sur 18, `lieuTournage` sur 589.
   - Éspaces parasites en fin de chaine sur `dateNaissance` et `lieuNaissance` -> `trim()` au parsing.
 - **Acteurs et réalisateurs** : même structure de données (`id`, `identite`, `url`, `naissance`), et une même personne peut apparaitre dans les deux rôles selon les films. Modélisées comme une seule entité `Personne`.
 - **`lieuTournage`** : structure ville/etatDept/pays propre à chaque film, sans contrainte d'unicité demandée et sans réutilisation entre films → modélise en attributs embarqués dans `Film`, pas en entité à part.
-- **`castingPrincipal`** : sert à déterminer `Role.principal` au parsing (`true` si l'id de l'acteur apparaît dans `castingPrincipal` pour ce film). Pas repris comme structure à part — les données de casting restent centralisées dans `roles`/`ROLE`. Attention : l'ordre de `castingPrincipal` ne correspond pas à celui de `roles` (vérifié sur l'ensemble du jeu de données, seulement 29/2748 films où les N premiers acteurs de`roles` correspondent à `castingPrincipal` dans le même ordre), le flag doit être déterminé par correspondance d'`id`, jamais par position.
+- **`castingPrincipal`** : sert à déterminer `Role.principal` au parsing (`true` si l'id de l'acteur apparaît dans `castingPrincipal` pour ce film). Pas repris comme structure à part — les données de casting restent centralisées dans `roles`/`ROLE`.
 
 ## 2. Diagramme de classes
 
@@ -171,7 +171,7 @@ erDiagram
 
 ### Clés primaires
 
-- `FILM.id` et `PERSONNE.id` : clés naturelles (identifiants IMDb, ex : `tt0082449`, `nm0000001`) en `VARCHAR(15)`, pas de génération automatique. Les 38 doublons détectés dans le JSON sont à dédupliquer au parsing (tâche n°3) puisque l'id devient PK.
+- `FILM.id` et `PERSONNE.id` : clés naturelles (identifiants IMDb, ex : `tt0082449`, `nm0000001`) en `VARCHAR(15)`, pas de génération automatique.
 - `PAYS`, `LANGUE`, `GENRE`, `LIEU_NAISSANCE`, `ROLE` : clés techniques `INT AUTO_INCREMENT`, l'id n'existe pas dans la source.
 
 ### Contraintes d'unicité (UK)
@@ -184,7 +184,6 @@ Deux tables de jonction, sans attribut propre, clé primaire composite :
 
 - `FILM_GENRE` (film_id, genre_id).
 - `FILM_REALISATEUR` (film_id, personne_id).
-  `ROLE` n'est pas une simple table de jonction : elle porte `character_name`, donc elle a sa propre clé technique (`id INT AUTO_INCREMENT`) et se modélise comme une entité à part entière plutôt qu'une table film_x_personne composite.
 
 ### Nullabilité (FK optionnelles)
 
