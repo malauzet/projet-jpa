@@ -15,7 +15,7 @@ Le fichier `films.json` contient 2748 films. Analyse de la structure :
   - Éspaces parasites en fin de chaine sur `dateNaissance` et `lieuNaissance` -> `trim()` au parsing.
 - **Acteurs et réalisateurs** : même structure de données (`id`, `identite`, `url`, `naissance`), et une même personne peut apparaitre dans les deux rôles selon les films. Modélisées comme une seule entité `Personne`.
 - **`lieuTournage`** : structure ville/etatDept/pays propre à chaque film, sans contrainte d'unicité demandée et sans réutilisation entre films → modélise en attributs embarqués dans `Film`, pas en entité à part.
-- - **`castingPrincipal`** : sert à déterminer `Role.principal` au parsing (`true` si l'id de l'acteur apparaît dans `castingPrincipal` pour ce film). Pas repris comme structure à part — les données de casting restent centralisées dans `roles`/`ROLE`. Attention : l'ordre de `castingPrincipal` ne correspond pas à celui de `roles` (vérifié sur l'ensemble du jeu de données, seulement 29/2748 films où les N premiers acteurs de`roles` correspondent à `castingPrincipal` dans le même ordre), le flag doit être déterminé par correspondance d'`id`, jamais par position.
+- **`castingPrincipal`** : sert à déterminer `Role.principal` au parsing (`true` si l'id de l'acteur apparaît dans `castingPrincipal` pour ce film). Pas repris comme structure à part — les données de casting restent centralisées dans `roles`/`ROLE`. Attention : l'ordre de `castingPrincipal` ne correspond pas à celui de `roles` (vérifié sur l'ensemble du jeu de données, seulement 29/2748 films où les N premiers acteurs de`roles` correspondent à `castingPrincipal` dans le même ordre), le flag doit être déterminé par correspondance d'`id`, jamais par position.
 
 ## 2. Diagramme de classes
 
