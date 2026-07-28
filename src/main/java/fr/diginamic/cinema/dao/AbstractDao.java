@@ -24,7 +24,7 @@ public abstract class AbstractDao<T, ID> implements Dao<T, ID> {
      * Classe réelle de l'entité gérée par ce DAO (ex : Pays.class, Film.class...).
      * Chaque sous-classe concrète (ex : PaysDao)
      * transmet sa propre classe d'entité au constructeur de AbstractDao, qui la
-     * conserve ici pour pouvoir l'utiliser partout où T.class serait nécessaire
+     * conserve ici pour pouvoir l'utiliser partout où T.class serait nécessaire,
      * mais n'existe pas.
      */
     protected final Class<T> entityClass;
