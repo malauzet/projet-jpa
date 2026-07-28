@@ -1,3 +1,6 @@
+### Data ###
+src/main/resources/films.json
+
 ### Maven ###
 target/
 !.mvn/wrapper/maven-wrapper.jar
