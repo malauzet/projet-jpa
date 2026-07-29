@@ -25,27 +25,27 @@ public class FilmJson {
     private PaysJson pays;
 
     /**
-     * Nom du film brut, tel qu'écrit dans le JSON.
+     * Nom brut du film, tel qu'écrit dans le JSON.
      */
     private String nom;
 
     /**
-     * Url IMDb du film brut, tel qu'écrit dans le JSON.
+     * Url IMDb brute du film, telle qu'écrite dans le JSON.
      */
     private String url;
 
     /**
-     * Rating (note) du film brut, tel qu'écrit dans le JSON.
+     * Rating (note) brut du film, tel qu'écrit dans le JSON.
      */
     private String rating;
 
     /**
-     * Plot (Synopsis) du film brute, telle qu'écrite dans le JSON.
+     * Plot (Synopsis) brute du film, telle qu'écrite dans le JSON.
      */
     private String plot;
 
     /**
-     * Langue du film brute, telle qu'écrite dans le JSON.
+     * Langue brute du film, telle qu'écrite dans le JSON.
      */
     private String langue;
 
@@ -65,7 +65,7 @@ public class FilmJson {
     private List<PersonneJson> castingPrincipal;
 
     /**
-     * Année de sortie du film brute, telle qu'écrite dans le JSON.
+     * Année de sortie brute du film, telle qu'écrite dans le JSON.
      */
     private String anneeSortie;
 
@@ -75,7 +75,7 @@ public class FilmJson {
     private List<RoleJson> roles;
 
     /**
-     * Genres du film brut, tels qu'écrits dans le JSON.
+     * Genres bruts du film, tels qu'écrits dans le JSON.
      */
     private List<String> genres;
     

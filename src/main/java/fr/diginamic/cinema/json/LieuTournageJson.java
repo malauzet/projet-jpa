@@ -13,17 +13,17 @@ import lombok.Setter;
 public class LieuTournageJson {
 
     /**
-     * Nom de la ville de tournage brut, tel qu'écrit dans le JSON.
+     * Nom brut de la ville de tournage, tel qu'écrit dans le JSON.
      */
     private String ville;
 
     /**
-     * Nom de l'état ou département de tournage brut, tel qu'écrit dans le JSON.
+     * Nom brut de l'état ou département de tournage, tel qu'écrit dans le JSON.
      */
     private String etatDept;
 
     /**
-     * Nom du pays de tournage brut, tel qu'écrit dans le JSON.
+     * Nom brut du pays de tournage, tel qu'écrit dans le JSON.
      */
     private String pays;
 }
