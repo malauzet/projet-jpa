@@ -47,12 +47,21 @@ public class FilmMapper {
             film.setAnneeDebut(anneeRange.debut());
             film.setAnneeFin(finCandidat);
 
-            film.setVilleTournage(dto.getLieuTournage().getVille());
-            film.setEtatDeptTournage(dto.getLieuTournage().getEtatDept());
-            film.setPaysTournage(dto.getLieuTournage().getPays());
+            LieuTournageJson lieuTournage = dto.getLieuTournage();
 
-            film.setPays(toPays(dto.getPays(), caches));
-            film.setLangue(toLangue(dto.getLangue(), caches));
+            if (lieuTournage != null) {
+                film.setVilleTournage(lieuTournage.getVille());
+                film.setEtatDeptTournage(lieuTournage.getEtatDept());
+                film.setPaysTournage(lieuTournage.getPays());
+            }
+
+            if (dto.getPays() != null) {
+                film.setPays(toPays(dto.getPays(), caches));
+            }
+
+            if (dto.getLangue() != null) {
+                film.setLangue(toLangue(dto.getLangue(), caches));
+            }
 
             for (String genre : dto.getGenres()) {
                 film.getGenres().add(toGenre(genre, caches));
@@ -154,9 +163,11 @@ public class FilmMapper {
 
     /**
      * Parse une taille brute du JSON en BigDecimal, en mètres.
+     * Si la valeur inclut la mesure impériale (ex. "6′ 2½″ (1.89 m)"),
+     * seule la valeur entre parenthèses est conservée.
      * Retire l'unité (" m") et normalise la virgule décimale avant de parser.
      *
-     * @param raw taille brute telle qu'écrite dans le JSON ("1,70 m", "1.70 m")
+     * @param raw taille brute telle qu'écrite dans le JSON ("1,70 m", "1.70 m" "6′ 2½″ (1.89 m)")
      * @return la taille parsée, ou null si elle est absente
      */
     private static BigDecimal parseTaille(String raw) {
@@ -165,13 +176,21 @@ public class FilmMapper {
             return null;
         }
 
-        String trimmed = raw.trim();
+        // Remplace l'espace fine insécable de convention entre valeur + unité de mesure.
+        String trimmed = raw.trim().replace('\u202F', ' ');
 
         if (trimmed.isEmpty()) {
             return null;
         }
 
-        String withoutUnit = trimmed.replace(" m", "");
+        // Certaines tailles incluent la mesure impériale, ex. "6′ 2½″ (1.89 m)".
+        int parenIndex = trimmed.indexOf('(');
+
+        String valeurMetrique = parenIndex != -1
+                ? trimmed.substring(parenIndex + 1, trimmed.indexOf(')', parenIndex)) // On ne garde que la valeur entre parenthèses
+                : trimmed; // Pas de parenthèses : la chaîne est déjà la valeur en mètres
+
+        String withoutUnit = valeurMetrique.replace(" m", "");
         String normalized = withoutUnit.replace(',', '.');
 
         return new BigDecimal(normalized);
