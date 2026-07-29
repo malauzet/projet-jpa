@@ -24,7 +24,7 @@ public class Role {
     /**
      * Nom du personnage dans le film.
      */
-    @Column(length = 150)
+    @Column(name = "character_name", length = 150)
     private String characterName;
 
     /**

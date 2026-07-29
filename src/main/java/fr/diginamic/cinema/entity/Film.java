@@ -2,6 +2,8 @@ package fr.diginamic.cinema.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -46,7 +48,7 @@ public class Film {
     /**
      * Synopsis du film.
      */
-    @Lob
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String plot;
 
     /**
