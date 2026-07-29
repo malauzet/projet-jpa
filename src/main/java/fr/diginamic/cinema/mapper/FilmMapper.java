@@ -4,6 +4,7 @@ import fr.diginamic.cinema.entity.*;
 import fr.diginamic.cinema.json.*;
 
 import java.math.BigDecimal;
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -87,6 +88,23 @@ public class FilmMapper {
     }
 
     /**
+     * Normalise une valeur pour servir de clé de dédoublonnage :
+     * retire les espaces superflus,
+     * la casse et les accents/diacritiques,
+     * pour correspondre au comportement de comparaison de la collation utf8mb4_general_ci utilisée en base
+     * (insensible à la casse et aux accents, ex. "Montreal" et "Montréal" y sont considérés comme identiques).
+     *
+     * @param valeur valeur brute à normaliser
+     * @return la clé normalisée, utilisée uniquement pour la comparaison, jamais stockée telle quelle
+     */
+    private static String cleDedoublonnage(String valeur) {
+
+        String sansAccents = Normalizer.normalize(valeur.trim(), Normalizer.Form.NFD).replaceAll("\\p{M}", "");
+
+        return sansAccents.toLowerCase();
+    }
+
+    /**
      * Convertit un PaysJson en entité Pays, en réutilisant l'instance déjà connue
      * si un pays du même nom a déjà été rencontré dans cet import (dédoublonnage),
      * pour éviter de créer deux fois le même pays en base.
@@ -97,11 +115,12 @@ public class FilmMapper {
      */
     private static Pays toPays(PaysJson dto, DedupCaches caches) {
 
-        String key = dto.getNom().trim();
+        String trimmed = dto.getNom().trim();
+        String key = cleDedoublonnage(trimmed);
 
         return caches.pays.computeIfAbsent(key, k -> {
             Pays pays = new Pays();
-            pays.setNom(k);
+            pays.setNom(trimmed);
             pays.setUrl(dto.getUrl());
             return pays;
         });
@@ -118,11 +137,12 @@ public class FilmMapper {
      */
     private static Langue toLangue(String nom, DedupCaches caches) {
 
-        String key = nom.trim();
+        String trimmed = nom.trim();
+        String key = cleDedoublonnage(trimmed);
 
         return caches.langues.computeIfAbsent(key, k -> {
             Langue langue = new Langue();
-            langue.setNom(k);
+            langue.setNom(trimmed);
             return langue;
         });
     }
@@ -138,11 +158,12 @@ public class FilmMapper {
      */
     private static Genre toGenre(String nom, DedupCaches caches) {
 
-        String key = nom.trim();
+        String trimmed = nom.trim();
+        String key = cleDedoublonnage(trimmed);
 
         return caches.genres.computeIfAbsent(key, k -> {
             Genre genre = new Genre();
-            genre.setNom(k);
+            genre.setNom(trimmed);
             return genre;
         });
     }
@@ -158,11 +179,12 @@ public class FilmMapper {
      */
     private static LieuNaissance toLieuNaissance(String libelle, DedupCaches caches) {
 
-        String key = libelle.trim();
+        String trimmed = libelle.trim();
+        String key = cleDedoublonnage(trimmed);
 
         return caches.lieuxNaissance.computeIfAbsent(key, k -> {
             LieuNaissance lieuNaissance = new LieuNaissance();
-            lieuNaissance.setLibelle(k);
+            lieuNaissance.setLibelle(trimmed);
             return lieuNaissance;
         });
     }
