@@ -97,11 +97,11 @@ public class FilmMapper {
      */
     private static Pays toPays(PaysJson dto, DedupCaches caches) {
 
-        String key = dto.getNom();
+        String key = dto.getNom().trim();
 
         return caches.pays.computeIfAbsent(key, k -> {
             Pays pays = new Pays();
-            pays.setNom(dto.getNom());
+            pays.setNom(k);
             pays.setUrl(dto.getUrl());
             return pays;
         });
@@ -118,9 +118,11 @@ public class FilmMapper {
      */
     private static Langue toLangue(String nom, DedupCaches caches) {
 
-        return caches.langues.computeIfAbsent(nom, n -> {
+        String key = nom.trim();
+
+        return caches.langues.computeIfAbsent(key, k -> {
             Langue langue = new Langue();
-            langue.setNom(n);
+            langue.setNom(k);
             return langue;
         });
     }
@@ -136,9 +138,11 @@ public class FilmMapper {
      */
     private static Genre toGenre(String nom, DedupCaches caches) {
 
-        return caches.genres.computeIfAbsent(nom, n -> {
+        String key = nom.trim();
+
+        return caches.genres.computeIfAbsent(key, k -> {
             Genre genre = new Genre();
-            genre.setNom(n);
+            genre.setNom(k);
             return genre;
         });
     }
@@ -154,9 +158,11 @@ public class FilmMapper {
      */
     private static LieuNaissance toLieuNaissance(String libelle, DedupCaches caches) {
 
-        return caches.lieuxNaissance.computeIfAbsent(libelle, l -> {
+        String key = libelle.trim();
+
+        return caches.lieuxNaissance.computeIfAbsent(key, k -> {
             LieuNaissance lieuNaissance = new LieuNaissance();
-            lieuNaissance.setLibelle(l);
+            lieuNaissance.setLibelle(k);
             return lieuNaissance;
         });
     }
