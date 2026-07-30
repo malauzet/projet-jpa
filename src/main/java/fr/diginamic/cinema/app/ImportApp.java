@@ -10,7 +10,7 @@ import java.nio.file.Path;
  */
 public class ImportApp {
 
-    static void main() {
+    public static void main(String[] args) {
 
         Path jsonFile = Path.of("src/main/resources/films.json");
 
