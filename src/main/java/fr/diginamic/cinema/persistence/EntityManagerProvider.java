@@ -21,14 +21,19 @@ public final class EntityManagerProvider {
     }
 
     /**
-     * @return l'EntityManagerFactory partagée de l'application.
+     * Donne accès à l'EntityManagerFactory partagée de l'application,
+     * construite une seule fois.
+     *
+     * @return l'EntityManagerFactory partagée de l'application
      */
     public static EntityManagerFactory getEntityManagerFactory() {
         return ENTITY_MANAGER_FACTORY;
     }
 
     /**
-     * @return un nouvel EntityManager, à fermer par l'appelant après utilisation.
+     * Ouvre un nouvel EntityManager à partir de l'EntityManagerFactory partagée.
+     *
+     * @return un nouvel EntityManager, à fermer par l'appelant après utilisation
      */
     public static EntityManager getEntityManager() {
         return ENTITY_MANAGER_FACTORY.createEntityManager();
