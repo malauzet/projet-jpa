@@ -11,6 +11,7 @@ recherche).
 - **MariaDB** (pilote `mariadb-java-client` 3.5.9)
 - **Jackson** (`jackson-databind`) pour le parsing du JSON source
 - **Lombok** pour réduire le boilerplate (getters/setters/constructeurs)
+- **JUnit 5** pour les tests unitaires sur `FilmMapper` (voir plus bas — hors périmètre du projet école, approfondissement personnel)
 
 ## Structure du projet
 
@@ -31,6 +32,8 @@ src/main/java/fr/diginamic/cinema/
   service/                            ImportService, RechercheService
   console/                            Saisie, Affichage, MenuActions
   app/                                 ImportApp, MenuApp (points d'entrée)
+src/test/java/fr/diginamic/cinema/
+  mapper/                              FilmMapperTest (tests unitaires, hors périmètre)
 ```
 
 ## Prérequis
@@ -90,6 +93,16 @@ recherches, **0** pour quitter :
 
 Les identifiants attendus sont les ids IMDb bruts (ex. `nm0000001` pour une personne, `tt0082449` pour
 un film).
+
+## Lancer les tests
+
+```powershell
+mvn test
+```
+
+38 tests unitaires JUnit 5 sur `FilmMapper` (parsing des dates/notes/tailles/années, dédoublonnage,
+fusion des doublons, gardes sur les clés optionnelles absentes). ⚠️ Cette suite de tests n'est pas une
+exigence du projet école — c'est un approfondissement personnel ajouté après coup.
 
 ## Documentation complémentaire
 
