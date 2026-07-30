@@ -371,7 +371,7 @@ public class FilmMapper {
     private static AnneeRange parseAnneeRange(String raw) {
 
         if (raw == null) {
-            return null;
+            return new AnneeRange(null, null);
         }
 
         String trimmed = raw.trim();
