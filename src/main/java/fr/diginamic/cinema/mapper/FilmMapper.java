@@ -101,7 +101,7 @@ public class FilmMapper {
      *               la personne (et son lieu de naissance le cas échéant) sont ajoutés aux caches correspondants.
      * @return l'entité Personne correspondante, existante ou nouvellement créée.
      */
-    private static Personne toPersonne(PersonneJson dto, DedupCaches caches) {
+    static Personne toPersonne(PersonneJson dto, DedupCaches caches) {
 
         String key = dto.getId();
 
@@ -135,7 +135,7 @@ public class FilmMapper {
      * @param caches    caches de dédoublonnage de l'import en cours, transmis à toPersonne
      * @return l'entité Role nouvellement créée
      */
-    private static Role toRole(RoleJson dto, Film film, boolean principal, DedupCaches caches) {
+    static Role toRole(RoleJson dto, Film film, boolean principal, DedupCaches caches) {
 
         Role role = new Role();
 
@@ -155,7 +155,7 @@ public class FilmMapper {
      * @param castingPrincipal liste des acteurs principaux du film, telle qu'écrite dans le JSON.
      * @return true si l'acteur figure dans castingPrincipal, false sinon.
      */
-    private static boolean isPrincipal(PersonneJson acteur, List<PersonneJson> castingPrincipal) {
+    static boolean isPrincipal(PersonneJson acteur, List<PersonneJson> castingPrincipal) {
 
         return castingPrincipal.stream()
                 .anyMatch(p -> p.getId().equals(acteur.getId()));
@@ -170,7 +170,7 @@ public class FilmMapper {
      * @param caches caches de dédoublonnage de l'import en cours, le pays est ajouté à caches.pays s'il n'y était pas déjà.
      * @return l'entité Pays correspondante, existante ou nouvellement créée
      */
-    private static Pays toPays(PaysJson dto, DedupCaches caches) {
+    static Pays toPays(PaysJson dto, DedupCaches caches) {
         return dedupe(caches.pays, dto.getNom(), trimmed -> {
             Pays pays = new Pays();
             pays.setNom(trimmed);
@@ -188,7 +188,7 @@ public class FilmMapper {
      * @param caches caches de dédoublonnage de l'import en cours, la langue est ajoutée à caches.langues si elle n'y était pas déjà.
      * @return l'entité Langue correspondante, existante ou nouvellement créée.
      */
-    private static Langue toLangue(String nom, DedupCaches caches) {
+    static Langue toLangue(String nom, DedupCaches caches) {
         return dedupe(caches.langues, nom, trimmed -> {
             Langue langue = new Langue();
             langue.setNom(trimmed);
@@ -205,7 +205,7 @@ public class FilmMapper {
      * @param caches caches de dédoublonnage de l'import en cours, le genre est ajouté à caches.genres s'il n'y était pas déjà
      * @return l'entité Genre correspondante, existante ou nouvellement créée
      */
-    private static Genre toGenre(String nom, DedupCaches caches) {
+    static Genre toGenre(String nom, DedupCaches caches) {
         return dedupe(caches.genres, nom, trimmed -> {
             Genre genre = new Genre();
             genre.setNom(trimmed);
@@ -222,7 +222,7 @@ public class FilmMapper {
      * @param caches  caches de dédoublonnage de l'import en cours, le lieu est ajouté à caches.lieuxNaissance s'il n'y était pas déjà
      * @return l'entité LieuNaissance correspondante, existante ou nouvellement créée
      */
-    private static LieuNaissance toLieuNaissance(String libelle, DedupCaches caches) {
+    static LieuNaissance toLieuNaissance(String libelle, DedupCaches caches) {
         return dedupe(caches.lieuxNaissance, libelle, trimmed -> {
             LieuNaissance lieuNaissance = new LieuNaissance();
             lieuNaissance.setLibelle(trimmed);
@@ -240,7 +240,7 @@ public class FilmMapper {
      * @param <T>     type de l'entité dédoublonnée
      * @return l'entité correspondante, existante ou nouvellement créée
      */
-    private static <T> T dedupe(Map<String, T> cache, String raw, Function<String, T> builder) {
+    static <T> T dedupe(Map<String, T> cache, String raw, Function<String, T> builder) {
 
         String trimmed = raw.trim();
         String key = cleDedoublonnage(trimmed);
@@ -258,7 +258,7 @@ public class FilmMapper {
      * @param valeur valeur brute à normaliser
      * @return la clé normalisée, utilisée uniquement pour la comparaison, jamais stockée telle quelle
      */
-    private static String cleDedoublonnage(String valeur) {
+    static String cleDedoublonnage(String valeur) {
 
         String sansAccents = Normalizer.normalize(valeur.trim(), Normalizer.Form.NFD).replaceAll("\\p{M}", "");
 
@@ -275,7 +275,7 @@ public class FilmMapper {
      * @param raw date brute telle qu'écrite dans le JSON ("1994", "1969–1970")
      * @return la date de sortie du film, l'interval de diffusion d'une émission ou série, ou null si absente.
      */
-    private static AnneeRange parseAnneeRange(String raw) {
+    static AnneeRange parseAnneeRange(String raw) {
 
         if (raw == null) {
             return new AnneeRange(null, null);
@@ -302,7 +302,7 @@ public class FilmMapper {
      * @param raw note brute telle qu'écrite dans le JSON (X.X, X,X, "vide")
      * @return la note parsée ou null si elle est absente.
      */
-    private static BigDecimal parseRating(String raw) {
+    static BigDecimal parseRating(String raw) {
 
         if (raw == null) {
             return null;
@@ -328,7 +328,7 @@ public class FilmMapper {
      * @param raw date brute telle qu'écrite dans le JSON ("May 7 1940 ", "17 août 1943 ").
      * @return la date parsée, ou null si elle est absente, incomplète ou dans un format non géré.
      */
-    private static LocalDate parseDate(String raw) {
+    static LocalDate parseDate(String raw) {
 
         if (raw == null) {
             return null;
@@ -367,7 +367,7 @@ public class FilmMapper {
      * @param raw taille brute telle qu'écrite dans le JSON ("1,70 m", "1.70 m" "6′ 2½″ (1.89 m)")
      * @return la taille parsée, ou null si elle est absente
      */
-    private static BigDecimal parseTaille(String raw) {
+    static BigDecimal parseTaille(String raw) {
 
         if (raw == null) {
             return null;
@@ -400,5 +400,5 @@ public class FilmMapper {
      * @param debut année de début
      * @param fin   année de fin, ou null si inconnue/non applicable
      */
-    private record AnneeRange(Integer debut, Integer fin) {}
+    record AnneeRange(Integer debut, Integer fin) {}
 }
