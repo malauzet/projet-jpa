@@ -1,0 +1,9 @@
+DELETE FROM role;
+DELETE FROM film_genre;
+DELETE FROM film_realisateur;
+DELETE FROM film;
+DELETE FROM personne;
+DELETE FROM lieu_naissance;
+DELETE FROM langue;
+DELETE FROM genre;
+DELETE FROM pays;
