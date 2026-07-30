@@ -45,6 +45,7 @@ public class FilmMapper {
             film.setNom(dto.getNom());
             film.setUrl(dto.getUrl());
             film.setPlot(dto.getPlot());
+            film.setRating(parseRating(dto.getRating()));
             film.setAnneeDebut(anneeRange.debut());
             film.setAnneeFin(finCandidat);
 
