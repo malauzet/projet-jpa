@@ -7,6 +7,16 @@ import fr.diginamic.cinema.entity.Role;
 
 import java.util.List;
 
+/**
+ * Regroupe les 6 opérations de recherche exposées par MenuApp :
+ * filmographie d'un acteur,
+ * casting d'un film,
+ * films entre deux années,
+ * films communs à deux acteurs,
+ * acteurs communs à deux films,
+ * films d'un acteur entre deux années.
+ * Chaque méthode délègue directement à la méthode DAO correspondante.
+ */
 public class RechercheService {
 
     private final PersonneDao personneDao = new PersonneDao();
