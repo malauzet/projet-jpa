@@ -11,6 +11,9 @@ import java.util.List;
  */
 public class RoleDao extends AbstractDao<Role, Integer> {
 
+    /**
+     * Construit le DAO pour l'entité Role.
+     */
     public RoleDao() {
         super(Role.class);
     }

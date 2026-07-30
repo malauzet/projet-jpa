@@ -7,6 +7,9 @@ import fr.diginamic.cinema.entity.Pays;
  */
 public class PaysDao extends AbstractDao<Pays, Integer> {
 
+    /**
+     * Construit le DAO pour l'entité Pays.
+     */
     public PaysDao() {
         super(Pays.class);
     }

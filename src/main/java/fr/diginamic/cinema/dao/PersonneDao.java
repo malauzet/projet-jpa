@@ -11,6 +11,9 @@ import java.util.List;
  */
 public class PersonneDao extends AbstractDao<Personne, String> {
 
+    /**
+     * Construit le DAO pour l'entité Personne.
+     */
     public PersonneDao() {
         super(Personne.class);
     }

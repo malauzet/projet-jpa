@@ -11,6 +11,9 @@ import java.util.List;
  */
 public class FilmDao extends AbstractDao<Film, String> {
 
+    /**
+     * Construit le DAO pour l'entité Film.
+     */
     public FilmDao() {
         super(Film.class);
     }
