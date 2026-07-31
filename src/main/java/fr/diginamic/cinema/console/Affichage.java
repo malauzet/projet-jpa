@@ -4,12 +4,17 @@ import fr.diginamic.cinema.entity.Film;
 import fr.diginamic.cinema.entity.Personne;
 import fr.diginamic.cinema.entity.Role;
 
+import java.util.List;
+import java.util.function.Consumer;
+
 /**
  * Utilitaires d'affichage console pour les entités renvoyées par RechercheService.
  * N'affiche que des champs chargés EAGER, pour ne jamais déclencher de
  * LazyInitializationException une fois l'EntityManager de la requête refermé.
  */
 public class Affichage {
+
+    private static final String SEPARATEUR = "——————————————————————————————————————————————";
 
     /**
      * Affiche le menu principal et ses 8 options (les 7 recherches + quitter).
@@ -60,5 +65,34 @@ public class Affichage {
      */
     public static void afficherPersonne(Personne personne) {
         System.out.println(personne.getId() + " - " + personne.getIdentite());
+    }
+
+    /**
+     * Affiche une liste de résultats entre deux barres de séparation,
+     * suivie du nombre de résultats trouvés (accord singulier/pluriel géré).
+     *
+     * @param resultats liste des résultats à afficher (peut être vide)
+     * @param afficheur méthode d'affichage à appliquer à chaque résultat (ex. {@code Affichage::afficherFilm})
+     * @param <T>       type des résultats affichés
+     */
+    public static <T> void afficherResultats(List<T> resultats, Consumer<T> afficheur) {
+
+        System.out.println(SEPARATEUR);
+
+        for (T resultat : resultats) {
+            afficheur.accept(resultat);
+        }
+
+        System.out.println(SEPARATEUR);
+
+        if (resultats.isEmpty()) {
+            System.out.println("Aucun résultat n'a été trouvé.");
+        } else if (resultats.size() == 1) {
+            System.out.println("1 résultat a été trouvé.");
+        } else {
+            System.out.println(resultats.size() + " résultats ont été trouvés.");
+        }
+
+        System.out.println(SEPARATEUR);
     }
 }

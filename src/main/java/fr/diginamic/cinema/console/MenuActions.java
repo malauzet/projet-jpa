@@ -26,13 +26,7 @@ public class MenuActions {
 
         List<Film> films = service.filmographieActeur(personneId);
 
-        if (films.isEmpty()) {
-            System.out.println("Aucun film trouvé pour cet id.");
-        } else {
-            for (Film film : films) {
-                Affichage.afficherFilm(film);
-            }
-        }
+        Affichage.afficherResultats(films, Affichage::afficherFilm);
     }
 
     /**
@@ -47,13 +41,7 @@ public class MenuActions {
 
         List<Role> acteurs = service.castingFilm(filmId);
 
-        if (acteurs.isEmpty()) {
-            System.out.println("Aucun acteur trouvé pour cet id.");
-        } else {
-            for (Role acteur : acteurs) {
-                Affichage.afficherRole(acteur);
-            }
-        }
+        Affichage.afficherResultats(acteurs, Affichage::afficherRole);
     }
 
     /**
@@ -69,13 +57,7 @@ public class MenuActions {
 
         List<Film> films = service.filmsEntreAnnees(debut, fin);
 
-        if (films.isEmpty()) {
-            System.out.println("Aucun film trouvé pour cette plage d'années.");
-        } else {
-            for (Film film : films) {
-                Affichage.afficherFilm(film);
-            }
-        }
+        Affichage.afficherResultats(films, Affichage::afficherFilm);
     }
 
     /**
@@ -91,13 +73,7 @@ public class MenuActions {
 
         List<Film> films = service.filmsCommuns(personneId1, personneId2);
 
-        if (films.isEmpty()) {
-            System.out.println("Aucun film commun trouvé pour ces deux acteurs.");
-        } else {
-            for (Film film : films) {
-                Affichage.afficherFilm(film);
-            }
-        }
+        Affichage.afficherResultats(films, Affichage::afficherFilm);
     }
 
     /**
@@ -113,13 +89,7 @@ public class MenuActions {
 
         List<Personne> acteurs = service.acteursCommuns(filmId1, filmId2);
 
-        if (acteurs.isEmpty()) {
-            System.out.println("Aucun acteur commun trouvé pour ces deux films.");
-        } else {
-            for (Personne acteur : acteurs) {
-                Affichage.afficherPersonne(acteur);
-            }
-        }
+        Affichage.afficherResultats(acteurs, Affichage::afficherPersonne);
     }
 
     /**
@@ -137,13 +107,7 @@ public class MenuActions {
 
         List<Film> films = service.filmsActeurEntreAnnees(personneId, debut, fin);
 
-        if (films.isEmpty()) {
-            System.out.println("Aucun film trouvé pour cet acteur sur cette plage d'années.");
-        } else {
-            for (Film film : films) {
-                Affichage.afficherFilm(film);
-            }
-        }
+        Affichage.afficherResultats(films, Affichage::afficherFilm);
     }
 
     /**
@@ -168,22 +132,10 @@ public class MenuActions {
 
         if (type == 1) {
             List<Personne> personnes = service.rechercherActeursParNom(nom);
-            if (personnes.isEmpty()) {
-                System.out.println("Aucune personne trouvée pour ce nom.");
-            } else {
-                for (Personne personne : personnes) {
-                    Affichage.afficherPersonne(personne);
-                }
-            }
+            Affichage.afficherResultats(personnes, Affichage::afficherPersonne);
         } else {
             List<Film> films = service.rechercherFilmsParNom(nom);
-            if (films.isEmpty()) {
-                System.out.println("Aucun film trouvé pour ce nom.");
-            } else {
-                for (Film film : films) {
-                    Affichage.afficherFilm(film);
-                }
-            }
+            Affichage.afficherResultats(films, Affichage::afficherFilm);
         }
     }
 }
