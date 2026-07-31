@@ -28,6 +28,53 @@ public class ImportService {
     private final RoleDao roleDao = new RoleDao();
 
     /**
+     * Précharge dans les caches toutes les entités déjà présentes en base
+     * (pays, langues, genres, lieux de naissance, personnes, films),
+     * avant le mapping du JSON, pour que FilmMapper les retrouve comme des doublons
+     * plutôt que d'en recréer des instances qui casseraient les contraintes uniques à la persistance.
+     * Les ensembles xxxExistants(es) de caches retiennent les clés déjà présentes avant ce run,
+     * pour que persister() sache lesquelles ne pas réinsérer.
+     *
+     * @param caches caches de dédoublonnage à préremplir avec l'état actuel de la base
+     */
+    private void chargerExistant(DedupCaches caches) {
+
+        for (Personne personne : personneDao.findAll()) {
+            caches.personnes.put(personne.getId(), personne);
+            caches.personnesExistantes.add(personne.getId());
+        }
+
+        for (Film film : filmDao.findAll()) {
+            caches.films.put(film.getId(), film);
+            caches.filmsExistants.add(film.getId());
+        }
+
+        for (Pays pays : paysDao.findAll()) {
+            String key = FilmMapper.cleDedoublonnage(pays.getNom());
+            caches.pays.put(key, pays);
+            caches.paysExistants.add(key);
+        }
+
+        for (Langue langue : langueDao.findAll()) {
+            String key = FilmMapper.cleDedoublonnage(langue.getNom());
+            caches.langues.put(key, langue);
+            caches.languesExistantes.add(key);
+        }
+
+        for (Genre genre : genreDao.findAll()) {
+            String key = FilmMapper.cleDedoublonnage(genre.getNom());
+            caches.genres.put(key, genre);
+            caches.genresExistants.add(key);
+        }
+
+        for (LieuNaissance lieuNaissance : lieuNaissanceDao.findAll()) {
+            String key = FilmMapper.cleDedoublonnage(lieuNaissance.getLibelle());
+            caches.lieuxNaissance.put(key, lieuNaissance);
+            caches.lieuxNaissanceExistants.add(key);
+        }
+    }
+
+    /**
      * Importe le fichier JSON donné en base de données.
      *
      * @param jsonFile chemin vers le fichier films.json à importer
@@ -40,6 +87,9 @@ public class ImportService {
 
         // 2. create DedupCaches
         DedupCaches caches = new DedupCaches();
+
+        // // 2bis. précharger l'existant en base pour dédoublonnage éventuel
+        chargerExistant(caches);
 
         // 3. for each FilmJson: FilmMapper.toFilm(dto, caches), then persister(film, caches)
         for (FilmJson dto : filmsJson) {
@@ -76,21 +126,62 @@ public class ImportService {
      */
     private void persister(DedupCaches caches) {
 
-        paysDao.saveAll(caches.pays.values());
+        List<Pays> nouveauxPays = new ArrayList<>();
+        for (Pays pays : caches.pays.values()) {
+            String key = FilmMapper.cleDedoublonnage(pays.getNom());
+            if (!caches.paysExistants.contains(key)) {
+                nouveauxPays.add(pays);
+            }
+        }
+        paysDao.saveAll(nouveauxPays);
 
-        langueDao.saveAll(caches.langues.values());
+        List<Langue> nouvellesLangues = new ArrayList<>();
+        for (Langue langue : caches.langues.values()) {
+            String key = FilmMapper.cleDedoublonnage(langue.getNom());
+            if (!caches.languesExistantes.contains(key)) {
+                nouvellesLangues.add(langue);
+            }
+        }
+        langueDao.saveAll(nouvellesLangues);
 
-        genreDao.saveAll(caches.genres.values());
+        List<Genre> nouveauxGenres = new ArrayList<>();
+        for (Genre genre : caches.genres.values()) {
+            String key = FilmMapper.cleDedoublonnage(genre.getNom());
+            if (!caches.genresExistants.contains(key)) {
+                nouveauxGenres.add(genre);
+            }
+        }
+        genreDao.saveAll(nouveauxGenres);
 
-        lieuNaissanceDao.saveAll(caches.lieuxNaissance.values());
+        List<LieuNaissance> nouveauxLieuNaissance = new ArrayList<>();
+        for (LieuNaissance lieuNaissance : caches.lieuxNaissance.values()) {
+            String key = FilmMapper.cleDedoublonnage(lieuNaissance.getLibelle());
+            if (!caches.lieuxNaissanceExistants.contains(key)) {
+                nouveauxLieuNaissance.add(lieuNaissance);
+            }
+        }
+        lieuNaissanceDao.saveAll(nouveauxLieuNaissance);
 
-        personneDao.saveAll(caches.personnes.values());
+        List<Personne> nouvellesPersonnes = new ArrayList<>();
+        for (Personne personne : caches.personnes.values()) {
+            if (!caches.personnesExistantes.contains(personne.getId())) {
+                nouvellesPersonnes.add(personne);
+            }
+        }
+        personneDao.saveAll(nouvellesPersonnes);
 
-        filmDao.saveAll(caches.films.values());
+        List<Film> nouveauxFilms = new ArrayList<>();
+        for (Film film : caches.films.values()) {
+            if (caches.filmsExistants.contains(film.getId())) {
+                filmDao.update(film);
+            } else {
+                nouveauxFilms.add(film);
+            }
+        }
+        filmDao.saveAll(nouveauxFilms);
 
         List<Role> roles = new ArrayList<>();
-
-        for (Film film : caches.films.values()) {
+        for (Film film : nouveauxFilms) {
             roles.addAll(film.getRoles());
         }
         roleDao.saveAll(roles);

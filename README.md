@@ -95,11 +95,12 @@ passe, base `cinema` sur `localhost:3306`.
 
 Exécuter `fr.diginamic.cinema.app.ImportApp` (point d'entrée). Lit `films.json`, dédoublonne les
 entités répétées, puis persiste tout en base (par lot, une transaction par collection plutôt qu'une
-par entité). Environ 95 s pour les 2748 films.
+par entité). Environ 95 s sur une base vide pour les 2748 films.
 
-⚠️ **L'import n'est pas idempotent.** Le relancer sur une base déjà peuplée échoue sur les contraintes
-uniques (aucune vérification d'existence avant `persist`). Vider la base d'abord (voir ci-dessus) avant
-tout nouvel import.
+**L'import est idempotent.** Le relancer sur une base déjà peuplée précharge l'existant (id IMDb pour
+`Personne`/`Film`, nom/libellé normalisé pour les entités de référence) et ne persiste que ce qui est
+réellement nouveau — aucune contrainte unique violée, aucune donnée dupliquée. Un ré-import complet ne
+prend alors qu'une dizaine de secondes.
 
 ## Lancer l'application de recherche
 

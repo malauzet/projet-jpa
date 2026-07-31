@@ -258,7 +258,7 @@ public class FilmMapper {
      * @param valeur valeur brute à normaliser
      * @return la clé normalisée, utilisée uniquement pour la comparaison, jamais stockée telle quelle
      */
-    static String cleDedoublonnage(String valeur) {
+    public static String cleDedoublonnage(String valeur) {
 
         String sansAccents = Normalizer.normalize(valeur.trim(), Normalizer.Form.NFD).replaceAll("\\p{M}", "");
 
