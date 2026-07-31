@@ -30,6 +30,7 @@ public class MenuApp {
                 case 4 -> MenuActions.menuFilmsCommuns(scanner, service);
                 case 5 -> MenuActions.menuActeursCommuns(scanner, service);
                 case 6 -> MenuActions.menuFilmsActeurEntreAnnees(scanner, service);
+                case 7 -> MenuActions.menuRechercheParNom(scanner, service);
                 case 0 -> System.out.println("Au revoir.");
             }
         } while (choix != 0);

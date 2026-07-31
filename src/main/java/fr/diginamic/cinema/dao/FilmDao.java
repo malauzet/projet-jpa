@@ -104,4 +104,27 @@ public class FilmDao extends AbstractDao<Film, String> {
                     .getResultList();
         }
     }
+
+    /**
+     * Recherche les films dont le nom contient la chaîne donnée
+     * (recherche partielle, insensible à la casse et
+     * aux accents grâce à la collation utf8mb4_general_ci de la base).
+     *
+     * @param nom fragment de nom recherché
+     * @return la liste des films dont le nom contient ce fragment
+     */
+    public List<Film> findByNomLike(String nom) {
+
+        String motif = "%" + nom.trim() + "%";
+
+        // Pas de transaction : une simple lecture ne modifie rien en base.
+        try (EntityManager em = EntityManagerProvider.getEntityManager()) {
+            return em.createQuery("SELECT f FROM Film f " +
+                            "WHERE f.nom LIKE :motif " +
+                            "ORDER BY f.nom", Film.class)
+                    .setParameter("motif", motif)
+                    .getResultList();
+        }
+    }
+
 }

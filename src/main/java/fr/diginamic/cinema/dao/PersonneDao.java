@@ -39,4 +39,26 @@ public class PersonneDao extends AbstractDao<Personne, String> {
                     .getResultList();
         }
     }
+
+    /**
+     * Recherche les personnes dont l'identité contient la chaîne donnée
+     * (recherche partielle, insensible à la casse et
+     * aux accents grâce à la collation utf8mb4_general_ci de la base).
+     *
+     * @param nom fragment de nom recherché
+     * @return la liste des personnes dont l'identité contient ce fragment
+     */
+    public List<Personne> findByIdentiteLike(String nom) {
+
+        String motif = "%" + nom.trim() + "%";
+
+        // Pas de transaction : une simple lecture ne modifie rien en base.
+        try (EntityManager em = EntityManagerProvider.getEntityManager()) {
+            return em.createQuery("SELECT p FROM Personne p " +
+                            "WHERE p.identite LIKE :motif " +
+                            "ORDER BY p.identite", Personne.class)
+                    .setParameter("motif", motif)
+                    .getResultList();
+        }
+    }
 }

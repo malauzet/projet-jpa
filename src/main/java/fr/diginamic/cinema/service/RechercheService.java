@@ -93,4 +93,26 @@ public class RechercheService {
     public List<Film> filmsActeurEntreAnnees(String personneId, int debut, int fin) {
         return filmDao.findByActeurIdAndAnneeRange(personneId, debut, fin);
     }
+
+    /**
+     * Recherche des acteurs par nom partiel, pour retrouver leur id IMDb.
+     *
+     * @param nom fragment de nom recherché
+     * @return la liste des personnes dont l'identité contient ce fragment
+     * @see PersonneDao#findByIdentiteLike(String)
+     */
+    public List<Personne> rechercherActeursParNom(String nom) {
+        return personneDao.findByIdentiteLike(nom);
+    }
+
+    /**
+     * Recherche des films par nom partiel, pour retrouver leur id IMDb.
+     *
+     * @param nom fragment de nom recherché
+     * @return la liste des films dont le nom contient ce fragment
+     * @see FilmDao#findByNomLike(String)
+     */
+    public List<Film> rechercherFilmsParNom(String nom) {
+        return filmDao.findByNomLike(nom);
+    }
 }

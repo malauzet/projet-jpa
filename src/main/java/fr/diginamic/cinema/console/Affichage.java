@@ -12,19 +12,21 @@ import fr.diginamic.cinema.entity.Role;
 public class Affichage {
 
     /**
-     * Affiche le menu principal et ses 7 options (les 6 recherches + quitter).
+     * Affiche le menu principal et ses 8 options (les 7 recherches + quitter).
      */
     public static void afficherMenu() {
 
         System.out.println();
-        System.out.println("=== Menu ===");
+        System.out.println("———————————————————— Menu ————————————————————");
         System.out.println("1. Filmographie d'un acteur");
         System.out.println("2. Casting d'un film");
         System.out.println("3. Films sortis entre deux années");
         System.out.println("4. Films communs à deux acteurs");
         System.out.println("5. Acteurs communs à deux films");
         System.out.println("6. Films d'un acteur entre deux années");
+        System.out.println("7. Rechercher un acteur ou un film par nom");
         System.out.println("0. Quitter");
+        System.out.println("——————————————————————————————————————————————");
     }
 
     /**

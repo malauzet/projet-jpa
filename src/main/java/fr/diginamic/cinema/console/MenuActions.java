@@ -145,4 +145,45 @@ public class MenuActions {
             }
         }
     }
+
+    /**
+     * Option 7 : recherche d'acteurs ou de films par nom (partiel), pour retrouver leur id IMDb
+     * sans avoir à le connaître d'avance.
+     *
+     * @param scanner scanner ouvert sur l'entrée standard
+     * @param service service de recherche
+     */
+    public static void menuRechercheParNom(Scanner scanner, RechercheService service) {
+
+        int type;
+
+        do {
+            type = Saisie.lireEntier(scanner, "1. Acteur  2. Film : ");
+            if (type != 1 && type != 2) {
+                System.out.println("Choix invalide, entrez 1 ou 2.");
+            }
+        } while (type != 1 && type != 2);
+
+        String nom = Saisie.lireTexte(scanner, "Nom (ou partie du nom) : ");
+
+        if (type == 1) {
+            List<Personne> personnes = service.rechercherActeursParNom(nom);
+            if (personnes.isEmpty()) {
+                System.out.println("Aucune personne trouvée pour ce nom.");
+            } else {
+                for (Personne personne : personnes) {
+                    Affichage.afficherPersonne(personne);
+                }
+            }
+        } else {
+            List<Film> films = service.rechercherFilmsParNom(nom);
+            if (films.isEmpty()) {
+                System.out.println("Aucun film trouvé pour ce nom.");
+            } else {
+                for (Film film : films) {
+                    Affichage.afficherFilm(film);
+                }
+            }
+        }
+    }
 }

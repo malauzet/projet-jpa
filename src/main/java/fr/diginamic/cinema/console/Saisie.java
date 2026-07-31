@@ -8,11 +8,11 @@ import java.util.Scanner;
 public class Saisie {
 
     /**
-     * Lit un choix de menu valide (entre 0 et 6),
+     * Lit un choix de menu valide (entre 0 et 7),
      * en reproposant tant que la saisie n'est pas un entier dans cette plage.
      *
      * @param scanner scanner ouvert sur l'entrée standard
-     * @return le choix de menu, un entier entre 0 et 6 inclus
+     * @return le choix de menu, un entier entre 0 et 7 inclus
      */
     public static int lireChoix(Scanner scanner) {
 
@@ -20,11 +20,11 @@ public class Saisie {
 
             int choix = lireEntier(scanner, "Votre choix : ");
 
-            if (choix >= 0 && choix <= 6) {
+            if (choix >= 0 && choix <= 7) {
                 return choix;
             }
 
-            System.out.println("Nombre invalide, entrez un nombre entre 0 et 6.");
+            System.out.println("Nombre invalide, entrez un nombre entre 0 et 7.");
         }
     }
 
