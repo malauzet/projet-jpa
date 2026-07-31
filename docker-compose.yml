@@ -1,0 +1,34 @@
+services:
+  mariadb:
+    # Version pinée plutôt que "latest", pour que tout le monde ait la même.
+    # Adapte le numéro à ta version locale (visible dans les logs Hibernate
+    # au démarrage : "Database version: ...").
+    image: mariadb:12
+
+    environment:
+      # Crée automatiquement la base "cinema" au premier démarrage
+      # (pas besoin de CREATE DATABASE toi-même).
+      MARIADB_DATABASE: cinema
+      # Autorise le root sans mot de passe, pour matcher persistence.xml
+      # tel qu'il est déjà configuré aujourd'hui (pas de vrai secret ici).
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+
+    ports:
+      # <port sur ta machine>:<port dans le conteneur>.
+      # persistence.xml pointe déjà sur localhost:3306, donc rien à changer côté Java.
+      - "3306:3306"
+
+    volumes:
+      # Volume nommé : les données survivent à un "docker compose down"
+      # (mais pas à un "docker compose down -v", qui les supprime).
+      - mariadb_data:/var/lib/mysql
+
+      # MariaDB exécute automatiquement tout script SQL placé ici,
+      # mais UNIQUEMENT au tout premier démarrage (volume vide).
+      # :ro = read-only, le conteneur n'a pas besoin d'écrire dedans.
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+
+# Déclaration du volume nommé utilisé ci-dessus. (clé racine, même niveau que "services:").
+volumes:
+  mariadb_data:
+  

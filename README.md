@@ -3,7 +3,7 @@
 ![CI](https://github.com/malauzet/projet-jpa/actions/workflows/ci.yml/badge.svg)
 
 Projet école (Diginamic) : import d'un dataset IMDb (`films.json`, ~21.7 Mo, 2748 films) dans une base
-MariaDB via JPA/Hibernate, puis exploration des données via une application console (6 opérations de
+MariaDB via JPA/Hibernate, puis exploration des données via une application console (7 opérations de
 recherche).
 
 ## Stack technique
@@ -23,7 +23,7 @@ sql/
   schema.sql                         DDL complet (base + 9 tables)
   reset_db.sql                       vide les données sans toucher au schéma
 src/main/resources/
-  films.json                         dataset source (non versionné, voir .gitignore)
+  films.json                         dataset source
   META-INF/persistence.xml           configuration JPA
 src/main/java/fr/diginamic/cinema/
   entity/                            7 entités JPA
@@ -42,10 +42,29 @@ src/test/java/fr/diginamic/cinema/
 
 - JDK 21
 - Maven
-- MariaDB (ex. via XAMPP), démarré sur `localhost:3306`
-- Le fichier `films.json` placé dans `src/main/resources/` (non fourni dans le dépôt)
+- Une base MariaDB accessible sur `localhost:3306`, au choix :
+  - **Docker** (recommandé) — voir la section suivante.
+  - **Installation manuelle** (ex. via XAMPP).
 
 ## Mise en place de la base de données
+
+### Option A — Docker (recommandé)
+
+Un `docker-compose.yml` à la racine lance une MariaDB déjà configurée, avec le schéma
+(`sql/schema.sql`) appliqué automatiquement au premier démarrage :
+
+```powershell
+docker compose up -d
+```
+
+Pour repartir d'une base vide :
+
+```powershell
+docker compose down -v
+docker compose up -d
+```
+
+### Option B — Installation manuelle (ex. XAMPP)
 
 Le schéma est écrit à la main (`hibernate.hbm2ddl.auto=validate` dans `persistence.xml`, Hibernate ne
 génère rien) : il faut donc l'exécuter manuellement avant tout import.
@@ -69,8 +88,8 @@ Pour un reset complet (schéma + données) :
 Get-Content sql\schema.sql | & "C:\xampp\mysql\bin\mysql.exe" -u root
 ```
 
-Connexion configurée dans `persistence.xml` : utilisateur `root`, pas de mot de passe, base `cinema` sur
-`localhost:3306`.
+Dans les deux cas, connexion configurée dans `persistence.xml` : utilisateur `root`, pas de mot de
+passe, base `cinema` sur `localhost:3306`.
 
 ## Lancer l'import
 
@@ -83,7 +102,7 @@ tout nouvel import.
 
 ## Lancer l'application de recherche
 
-Exécuter `fr.diginamic.cinema.app.MenuApp` (point d'entrée). Menu console, options **1 à 6** pour les
+Exécuter `fr.diginamic.cinema.app.MenuApp` (point d'entrée). Menu console, options **1 à 7** pour les
 recherches, **0** pour quitter :
 
 1. Filmographie d'un acteur
@@ -92,9 +111,11 @@ recherches, **0** pour quitter :
 4. Films communs à deux acteurs
 5. Acteurs communs à deux films
 6. Films d'un acteur entre deux années
+7. Rechercher un acteur ou un film par nom
 
-Les identifiants attendus sont les ids IMDb bruts (ex. `nm0000001` pour une personne, `tt0082449` pour
-un film).
+Les options 1 à 6 attendent des ids IMDb bruts (ex. `nm0000001` pour une personne, `tt0082449` pour un
+film) — l'option 7 permet de les retrouver à partir d'un nom (ou fragment de nom) si on ne les connaît
+pas déjà.
 
 ## Lancer les tests
 
@@ -108,5 +129,7 @@ exigence du projet école — c'est un approfondissement personnel ajouté aprè
 
 ## Documentation complémentaire
 
+- **`CODE_EXPLANATION.md`** — explication détaillée de tout le code, package par package, dans l'ordre
+  du flux de données réel.
 - **`conception/document_conception.md`** — document de conception initial (diagrammes de classes/ER,
   script DDL, constats sur les données sources).
