@@ -138,3 +138,12 @@ exigence du projet école — c'est un approfondissement personnel ajouté aprè
 
 - **`conception/document_conception.md`** — document de conception initial (diagrammes de classes/ER,
   script DDL, constats sur les données sources).
+
+## Licence
+
+Le code de ce projet est sous licence MIT (voir `LICENSE`).
+
+`films.json` est un jeu de données scrapé depuis IMDb, inclus dans ce dépôt pour la reproductibilité
+du projet (import, tests). Il n'est **pas** couvert par la licence MIT ci-dessus et reste la propriété
+de ses ayants droit — fourni ici à des fins pédagogiques uniquement, sans revendication de propriété ni
+autorisation de réutilisation commerciale.
