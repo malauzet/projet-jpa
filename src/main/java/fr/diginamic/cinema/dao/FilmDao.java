@@ -126,5 +126,4 @@ public class FilmDao extends AbstractDao<Film, String> {
                     .getResultList();
         }
     }
-
 }

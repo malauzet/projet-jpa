@@ -13,6 +13,7 @@ recherche).
 - **MariaDB** (pilote `mariadb-java-client` 3.5.9)
 - **Jackson** (`jackson-databind`) pour le parsing du JSON source
 - **Lombok** pour réduire le boilerplate (getters/setters/constructeurs)
+- **dotenv-java** pour charger les identifiants de connexion depuis un `.env` non versionné
 - **JUnit 5** pour les tests unitaires sur `FilmMapper` (voir plus bas — hors périmètre du projet école, approfondissement personnel)
 
 ## Structure du projet

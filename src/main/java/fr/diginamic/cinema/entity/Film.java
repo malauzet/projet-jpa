@@ -121,5 +121,5 @@ public class Film {
      * Rôles dans le film.
      */
     @OneToMany(mappedBy = "film")
-    private Set<Role> roles  = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 }

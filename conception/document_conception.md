@@ -25,7 +25,7 @@ classDiagram
         +String id
         +String nom
         +String url
-        +Double rating
+        +BigDecimal rating
         +String plot
         +Integer anneeDebut
         +Integer anneeFin
@@ -35,18 +35,18 @@ classDiagram
     }
 
     class Pays {
-        +Long id
+        +Integer id
         +String nom
         +String url
     }
 
     class Langue {
-        +Long id
+        +Integer id
         +String nom
     }
 
     class Genre {
-        +Long id
+        +Integer id
         +String nom
     }
 
@@ -55,16 +55,16 @@ classDiagram
         +String identite
         +String url
         +LocalDate dateNaissance
-        +Double taille
+        +BigDecimal taille
     }
 
     class LieuNaissance {
-        +Long id
+        +Integer id
         +String libelle
     }
 
     class Role {
-        +Long id
+        +Integer id
         +String characterName
         +Boolean principal
     }

@@ -78,5 +78,4 @@ public class FilmJson {
      * Genres bruts du film, tels qu'écrits dans le JSON.
      */
     private List<String> genres;
-    
 }

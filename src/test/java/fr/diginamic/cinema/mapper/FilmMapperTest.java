@@ -23,8 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Tests unitaires des méthodes de parsing/normalisation pures de FilmMapper
  * (parseDate, parseRating, parseTaille, parseAnneeRange, cleDedoublonnage).
  * Plusieurs cas correspondent directement à des bugs réels trouvés en testant
- * contre les vraies données (voir PLAN.md, bugs #7 et #8) : ce sont des tests
- * de non-régression sur ces incidents précis.
+ * contre les vraies données : ce sont des tests de non-régression sur ces incidents précis.
  */
 public class FilmMapperTest {
 
@@ -109,7 +108,7 @@ public class FilmMapperTest {
     }
 
     @Test
-    @DisplayName("parseTaille : espace fine insécable (non-régression bug historique #7)")
+    @DisplayName("parseTaille : espace fine insécable")
     void parseTaille_espaceFineInsecable() {
         assertEquals(new BigDecimal("1.70"), FilmMapper.parseTaille("1,70\u202Fm"));
     }
@@ -148,7 +147,7 @@ public class FilmMapperTest {
     }
 
     @Test
-    @DisplayName("parseAnneeRange : null -> AnneeRange(null, null), jamais null lui-même (non-régression revue de code point 3)")
+    @DisplayName("parseAnneeRange : null -> AnneeRange(null, null), jamais null lui-même")
     void parseAnneeRange_null() {
         assertEquals(new AnneeRange(null, null), FilmMapper.parseAnneeRange(null));
     }
@@ -163,7 +162,7 @@ public class FilmMapperTest {
     }
 
     @Test
-    @DisplayName("cleDedoublonnage : insensible à la casse (non-régression bug historique #8)")
+    @DisplayName("cleDedoublonnage : insensible à la casse")
     void cleDedoublonnage_insensibleCasse() {
         assertEquals(
                 FilmMapper.cleDedoublonnage("Newcastle upon Tyne, England, UK"),
@@ -171,7 +170,7 @@ public class FilmMapperTest {
     }
 
     @Test
-    @DisplayName("cleDedoublonnage : insensible aux accents (non-régression bug historique #8)")
+    @DisplayName("cleDedoublonnage : insensible aux accents")
     void cleDedoublonnage_insensibleAccents() {
         assertEquals(
                 FilmMapper.cleDedoublonnage("Montreal, Quebec, Canada"),
@@ -179,7 +178,7 @@ public class FilmMapperTest {
     }
 
     @Test
-    @DisplayName("cleDedoublonnage : insensible à une espace finale superflue (non-régression bug historique #8)")
+    @DisplayName("cleDedoublonnage : insensible à une espace finale superflue")
     void cleDedoublonnage_insensibleEspaceFinale() {
         assertEquals(
                 FilmMapper.cleDedoublonnage("Magog, Québec, Canada"),
@@ -225,7 +224,7 @@ public class FilmMapperTest {
     }
 
     @Test
-    @DisplayName("toFilm : intervalle + année seule combinés (cas réel tt0072562, cf. PLAN.md)")
+    @DisplayName("toFilm : intervalle + année seule combinés")
     void toFilm_doublon_intervalleEtAnneeSeuleCombines() {
         DedupCaches caches = new DedupCaches();
 
@@ -262,7 +261,7 @@ public class FilmMapperTest {
     // --- toFilm : gardes sur les clés optionnelles absentes ---
 
     @Test
-    @DisplayName("toFilm : pays/langue/lieuTournage absents ne lèvent pas de NullPointerException (non-régression bugs #2/#3)")
+    @DisplayName("toFilm : pays/langue/lieuTournage absents ne lèvent pas de NullPointerException")
     void toFilm_champsOptionnelsAbsents_neLeventPasDException() {
         DedupCaches caches = new DedupCaches();
 
@@ -288,7 +287,7 @@ public class FilmMapperTest {
     }
 
     @Test
-    @DisplayName("toPersonne : lieuNaissance vide (\"\") ne crée pas de LieuNaissance vide (non-régression bug #3 étape 7)")
+    @DisplayName("toPersonne : lieuNaissance vide (\"\") ne crée pas de LieuNaissance vide")
     void toPersonne_lieuNaissanceVide_neCreePasDeLieuNaissance() {
         DedupCaches caches = new DedupCaches();
 
