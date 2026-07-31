@@ -1,6 +1,7 @@
 # Films IMDb — Import JPA/Hibernate + Console de recherche
 
 ![CI](https://github.com/malauzet/projet-jpa/actions/workflows/ci.yml/badge.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Projet école (Diginamic) : import d'un dataset IMDb (`films.json`, ~21.7 Mo, 2748 films) dans une base
 MariaDB via JPA/Hibernate, puis exploration des données via une application console (7 opérations de

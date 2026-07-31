@@ -306,7 +306,8 @@ Package `fr.diginamic.cinema.app` créé (choix : package dédié aux points d'e
 - **❌ GitHub Pages — abandonné (2026-07-31)** : plan initial (source `/root`, `CODE_EXPLANATION.md` auto-converti en `.html`, `index.md` de redirection) exploré en détail mais jugé finalement sans intérêt réel pour ce projet — décision de l'utilisateur. `CODE_EXPLANATION.md`/`PLAN.md` seront simplement commit et référencés dans le README (section "Documentation complémentaire"), même traitement que `conception/document_conception.md` — pas de site publié séparément.
 - **✅ Licence MIT ajoutée** : fichier `LICENSE` (copyright "Marius Alauzet (malauzet)", 2026), section "Licence" ajoutée au `README.md` précisant que `films.json` (données scrapées IMDb) n'est pas couvert par cette licence — fourni à des fins pédagogiques uniquement. Commit `b613410`.
 - **✅ `README.md`, section "Documentation complémentaire"** : `CODE_EXPLANATION.md` et `PLAN.md` ajoutés à côté de `conception/document_conception.md` (simples liens vers les fichiers du repo, pas de site publié).
-- **Pistes notées, pas encore faites** : capture d'écran du menu console dans le README, badge de licence à côté du badge CI, tag/release `v1.0.0`, image de preview sociale, épingler le repo sur le profil GitHub.
+- **✅ Badge de licence ajouté (2026-07-31)** : `[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)` (shields.io), à côté du badge CI en tête du `README.md`, cliquable vers `LICENSE`.
+- **Pistes notées, pas encore faites** : capture d'écran du menu console dans le README, tag/release `v1.0.0`, image de preview sociale, épingler le repo sur le profil GitHub.
 
 ## c) Liste de contrôle
 
