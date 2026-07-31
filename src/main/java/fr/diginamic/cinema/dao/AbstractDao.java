@@ -6,6 +6,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -30,6 +31,12 @@ public abstract class AbstractDao<T, ID> implements Dao<T, ID> {
     protected final Class<T> entityClass;
 
     /**
+     * Nombre d'entités persistées entre deux flush/clear du contexte de persistance dans {@link #saveAll(Collection)},
+     * pour éviter qu'il grossisse indéfiniment sur de grosses collections.
+     */
+    private static final int BATCH_SIZE = 100;
+
+    /**
      * Constructeur appelé par les sous-classes.
      * @param entityClass la classe de l'entité gérée par ce DAO
      */
@@ -38,10 +45,28 @@ public abstract class AbstractDao<T, ID> implements Dao<T, ID> {
     }
 
     @Override
-    public T save(T entity) {
-        return executeInTransaction(em -> {
+    public void save(T entity) {
+        executeInTransaction(em -> {
             em.persist(entity);
-            return entity;
+        });
+    }
+
+    @Override
+    public void saveAll(Collection<T> entities) {
+
+        executeInTransaction(em -> {
+
+            int compteur = 0;
+
+            for (T entity : entities) {
+                em.persist(entity);
+                compteur++;
+
+                if (compteur % BATCH_SIZE == 0) {
+                    em.flush();
+                    em.clear();
+                }
+            }
         });
     }
 

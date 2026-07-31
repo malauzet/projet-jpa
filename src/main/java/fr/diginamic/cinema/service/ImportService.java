@@ -76,33 +76,23 @@ public class ImportService {
      */
     private void persister(DedupCaches caches) {
 
-        for (Pays pays : caches.pays.values()) {
-            paysDao.save(pays);
-        }
-        for (Langue langue : caches.langues.values()) {
-            langueDao.save(langue);
-        }
-        for (Genre genre : caches.genres.values()) {
-            genreDao.save(genre);
-        }
-        for (LieuNaissance lieu : caches.lieuxNaissance.values()) {
-            lieuNaissanceDao.save(lieu);
-        }
+        paysDao.saveAll(caches.pays.values());
 
-        for (Personne personne : caches.personnes.values()) {
-            personneDao.save(personne);
-        }
+        langueDao.saveAll(caches.langues.values());
 
-        for (Film film : caches.films.values()) {
-            filmDao.save(film);
-        }
+        genreDao.saveAll(caches.genres.values());
+
+        lieuNaissanceDao.saveAll(caches.lieuxNaissance.values());
+
+        personneDao.saveAll(caches.personnes.values());
+
+        filmDao.saveAll(caches.films.values());
 
         List<Role> roles = new ArrayList<>();
+
         for (Film film : caches.films.values()) {
             roles.addAll(film.getRoles());
         }
-        for (Role role : roles) {
-            roleDao.save(role);
-        }
+        roleDao.saveAll(roles);
     }
 }

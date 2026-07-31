@@ -1,5 +1,6 @@
 package fr.diginamic.cinema.dao;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,9 +14,19 @@ public interface Dao<T, ID> {
      * Persiste une nouvelle entité en base.
      *
      * @param entity l'entité à sauvegarder
-     * @return l'entité persistée
      */
-    T save(T entity);
+    void save(T entity);
+
+    /**
+     * Persiste plusieurs entités dans une seule transaction (un seul commit),
+     * plutôt qu'une transaction par entité comme {@link #save(Object)} appelée en boucle,
+     * nettement plus rapide sur de grosses collections.
+     * Le contexte de persistance est vidé (flush + clear) à intervalles réguliers
+     * pour ne pas grossir indéfiniment.
+     *
+     * @param entities les entités à persister
+     */
+    void saveAll(Collection<T> entities);
 
     /**
      * Recherche une entité par son identifiant.
