@@ -7,6 +7,12 @@ Projet école (Diginamic) : import d'un dataset IMDb (`films.json`, ~21.7 Mo, 27
 MariaDB via JPA/Hibernate, puis exploration des données via une application console (7 opérations de
 recherche).
 
+## Aperçu
+
+| Menu principal | Recherche par nom |
+|---|---|
+| ![Menu principal](docs/screenshots/menu.png) | ![Recherche par nom, exemple "star wars"](docs/screenshots/menu_resultats.png) |
+
 ## Stack technique
 
 - **Java 21** (Maven, `maven.compiler.source`/`target` = 21)

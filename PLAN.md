@@ -307,7 +307,8 @@ Package `fr.diginamic.cinema.app` créé (choix : package dédié aux points d'e
 - **✅ Licence MIT ajoutée** : fichier `LICENSE` (copyright "Marius Alauzet (malauzet)", 2026), section "Licence" ajoutée au `README.md` précisant que `films.json` (données scrapées IMDb) n'est pas couvert par cette licence — fourni à des fins pédagogiques uniquement. Commit `b613410`.
 - **✅ `README.md`, section "Documentation complémentaire"** : `CODE_EXPLANATION.md` et `PLAN.md` ajoutés à côté de `conception/document_conception.md` (simples liens vers les fichiers du repo, pas de site publié).
 - **✅ Badge de licence ajouté (2026-07-31)** : `[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)` (shields.io), à côté du badge CI en tête du `README.md`, cliquable vers `LICENSE`.
-- **Pistes notées, pas encore faites** : capture d'écran du menu console dans le README, tag/release `v1.0.0`, image de preview sociale, épingler le repo sur le profil GitHub.
+- **✅ Captures d'écran ajoutées (2026-07-31)** : `docs/screenshots/menu.png` (menu seul) et `docs/screenshots/menu_resultats.png` (parcours complet option 7, recherche "star wars", 9 résultats) — section "Aperçu" ajoutée au `README.md`, juste après l'intro, tableau côte à côte. Logs Hibernate rendus silencieux le temps des captures via `Logger.getLogger("org.hibernate").setLevel(Level.SEVERE)` ajouté temporairement dans `MenuApp.main()` puis retiré (jamais commit).
+- **Pistes notées, pas encore faites** : tag/release `v1.0.0`, image de preview sociale, épingler le repo sur le profil GitHub.
 
 ## c) Liste de contrôle
 

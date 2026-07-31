@@ -122,7 +122,7 @@ public class MenuActions {
         int type;
 
         do {
-            type = Saisie.lireEntier(scanner, "1. Acteur  2. Film : ");
+            type = Saisie.lireEntier(scanner, "1. Acteur  \n2. Film \nChoix : ");
             if (type != 1 && type != 2) {
                 System.out.println("Choix invalide, entrez 1 ou 2.");
             }
