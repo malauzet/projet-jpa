@@ -50,6 +50,14 @@ public interface Dao<T, ID> {
     T update(T entity);
 
     /**
+     * Met à jour plusieurs entités existantes dans une seule transaction (un seul commit),
+     * plutôt qu'une transaction par entité comme {@link #update(Object)} appelée en boucle.
+     *
+     * @param entities les entités à mettre à jour
+     */
+    void updateAll(Collection<T> entities);
+
+    /**
      * Supprime une entité de la base.
      *
      * @param entity l'entité à supprimer

@@ -97,6 +97,25 @@ public abstract class AbstractDao<T, ID> implements Dao<T, ID> {
     }
 
     @Override
+    public void updateAll(Collection<T> entities) {
+
+        executeInTransaction(em -> {
+
+            int compteur = 0;
+
+            for (T entity : entities) {
+                em.merge(entity);
+                compteur++;
+
+                if (compteur % BATCH_SIZE == 0) {
+                    em.flush();
+                    em.clear();
+                }
+            }
+        });
+    }
+
+    @Override
     public void delete(T entity) {
         executeInTransaction(em -> {
             // Si l'entité n'est pas déjà gérée par cet EntityManager

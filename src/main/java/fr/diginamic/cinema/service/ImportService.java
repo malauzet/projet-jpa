@@ -171,14 +171,16 @@ public class ImportService {
         personneDao.saveAll(nouvellesPersonnes);
 
         List<Film> nouveauxFilms = new ArrayList<>();
+        List<Film> filmsAMettreAJour = new ArrayList<>();
         for (Film film : caches.films.values()) {
             if (caches.filmsExistants.contains(film.getId())) {
-                filmDao.update(film);
+                filmsAMettreAJour.add(film);
             } else {
                 nouveauxFilms.add(film);
             }
         }
         filmDao.saveAll(nouveauxFilms);
+        filmDao.updateAll(filmsAMettreAJour);
 
         List<Role> roles = new ArrayList<>();
         for (Film film : nouveauxFilms) {
