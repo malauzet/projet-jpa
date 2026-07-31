@@ -94,7 +94,8 @@ passe, base `cinema` sur `localhost:3306`.
 ## Lancer l'import
 
 Exécuter `fr.diginamic.cinema.app.ImportApp` (point d'entrée). Lit `films.json`, dédoublonne les
-entités répétées, puis persiste tout en base. Environ 317 s pour les 2748 films.
+entités répétées, puis persiste tout en base (par lot, une transaction par collection plutôt qu'une
+par entité). Environ 95 s pour les 2748 films.
 
 ⚠️ **L'import n'est pas idempotent.** Le relancer sur une base déjà peuplée échoue sur les contraintes
 uniques (aucune vérification d'existence avant `persist`). Vider la base d'abord (voir ci-dessus) avant
@@ -129,7 +130,5 @@ exigence du projet école — c'est un approfondissement personnel ajouté aprè
 
 ## Documentation complémentaire
 
-- **`CODE_EXPLANATION.md`** — explication détaillée de tout le code, package par package, dans l'ordre
-  du flux de données réel.
 - **`conception/document_conception.md`** — document de conception initial (diagrammes de classes/ER,
   script DDL, constats sur les données sources).
