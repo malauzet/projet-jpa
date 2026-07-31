@@ -138,6 +138,10 @@ exigence du projet école — c'est un approfondissement personnel ajouté aprè
 
 - **`conception/document_conception.md`** — document de conception initial (diagrammes de classes/ER,
   script DDL, constats sur les données sources).
+- **`CODE_EXPLANATION.md`** — explication détaillée de tout le code, package par package, dans l'ordre
+  du flux de données réel.
+- **`PLAN.md`** — suivi complet du projet séance par séance : décisions prises, bugs réels trouvés et
+  corrigés, raisonnement derrière chaque choix.
 
 ## Licence
 
