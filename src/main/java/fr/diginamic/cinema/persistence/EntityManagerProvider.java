@@ -1,8 +1,12 @@
 package fr.diginamic.cinema.persistence;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Point d'accès unique à l'EntityManagerFactory de l'application.
@@ -31,7 +35,13 @@ public final class EntityManagerProvider {
     public static EntityManagerFactory getEntityManagerFactory() {
 
         if (entityManagerFactory == null) {
-            entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+            Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+
+            Map<String, Object> overrides = new HashMap<>();
+            overrides.put("jakarta.persistence.jdbc.user", dotenv.get("DB_USER"));
+            overrides.put("jakarta.persistence.jdbc.password", dotenv.get("DB_PASSWORD"));
+
+            entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, overrides);
         }
         return entityManagerFactory;
     }

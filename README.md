@@ -45,6 +45,8 @@ src/test/java/fr/diginamic/cinema/
 - Une base MariaDB accessible sur `localhost:3306`, au choix :
   - **Docker** (recommandé) — voir la section suivante.
   - **Installation manuelle** (ex. via XAMPP).
+- Un fichier `.env` à la racine (copier `.env.example` puis renseigner `DB_USER`/`DB_PASSWORD`) —
+  voir "Mise en place de la base de données" ci-dessous.
 
 ## Mise en place de la base de données
 
@@ -88,8 +90,10 @@ Pour un reset complet (schéma + données) :
 Get-Content sql\schema.sql | & "C:\xampp\mysql\bin\mysql.exe" -u root
 ```
 
-Dans les deux cas, connexion configurée dans `persistence.xml` : utilisateur `root`, pas de mot de
-passe, base `cinema` sur `localhost:3306`.
+Dans les deux cas, base `cinema` sur `localhost:3306`. Les identifiants (utilisateur `root`, pas de mot
+de passe) ne sont plus en dur dans `persistence.xml` : copier `.env.example` en `.env` à la racine du
+projet et y renseigner `DB_USER`/`DB_PASSWORD` (`.env` n'est pas versionné, `.env.example` sert de
+modèle). `EntityManagerProvider` les lit au démarrage et les injecte par-dessus `persistence.xml`.
 
 ## Lancer l'import
 
