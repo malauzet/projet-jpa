@@ -1,6 +1,7 @@
 package fr.diginamic.cinema.app;
 
 import fr.diginamic.cinema.service.ImportService;
+import jakarta.persistence.PersistenceException;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -27,6 +28,8 @@ public class ImportApp {
 
         } catch (IOException e) {
             System.err.println("Échec de la lecture du fichier JSON : " + e.getMessage());
+        } catch (PersistenceException e) {
+            System.err.println("Échec de la persistance en base : " + e.getMessage());
         }
     }
 }

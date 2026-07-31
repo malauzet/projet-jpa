@@ -6,15 +6,16 @@ import jakarta.persistence.Persistence;
 
 /**
  * Point d'accès unique à l'EntityManagerFactory de l'application.
- * On la construit une seule fois au chargement de la classe,
- * puis on la réutilise pour ouvrir des EntityManager.
+ * Construite paresseusement au premier appel plutôt qu'au chargement de la classe :
+ * si la connexion échoue (ex. base non démarrée),
+ * l'échec reste une exception normale et l'appel suivant retentera la connexion,
+ * au lieu de casser définitivement la classe pour le reste de l'exécution.
  */
 public final class EntityManagerProvider {
 
     private static final String PERSISTENCE_UNIT_NAME = "cinema";
 
-    private static final EntityManagerFactory ENTITY_MANAGER_FACTORY =
-            Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+    private static EntityManagerFactory entityManagerFactory;
 
     private EntityManagerProvider() {
         // Rend impossible d'écrire new EntityManagerProvider() depuis l'extérieur de la classe.
@@ -22,12 +23,17 @@ public final class EntityManagerProvider {
 
     /**
      * Donne accès à l'EntityManagerFactory partagée de l'application,
-     * construite une seule fois.
+     * en la construisant au premier appel (et en la réutilisant ensuite).
+     * Si la construction échoue, rien n'est mis en cache : le prochain appel retentera.
      *
      * @return l'EntityManagerFactory partagée de l'application
      */
     public static EntityManagerFactory getEntityManagerFactory() {
-        return ENTITY_MANAGER_FACTORY;
+
+        if (entityManagerFactory == null) {
+            entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+        }
+        return entityManagerFactory;
     }
 
     /**
@@ -36,15 +42,15 @@ public final class EntityManagerProvider {
      * @return un nouvel EntityManager, à fermer par l'appelant après utilisation
      */
     public static EntityManager getEntityManager() {
-        return ENTITY_MANAGER_FACTORY.createEntityManager();
+        return getEntityManagerFactory().createEntityManager();
     }
 
     /**
      * Ferme l'EntityManagerFactory. À appeler une seule fois, en fin de programme.
      */
     public static void close() {
-        if (ENTITY_MANAGER_FACTORY.isOpen()) {
-            ENTITY_MANAGER_FACTORY.close();
+        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
+            entityManagerFactory.close();
         }
     }
 }
