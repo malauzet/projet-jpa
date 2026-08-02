@@ -54,17 +54,18 @@ public class FilmMapper {
             LieuTournageJson lieuTournage = dto.getLieuTournage();
 
             if (lieuTournage != null) {
-                film.setVilleTournage(lieuTournage.getVille());
-                film.setEtatDeptTournage(lieuTournage.getEtatDept());
-                film.setPaysTournage(lieuTournage.getPays());
+                film.setVilleTournage(lieuTournage.getVille().trim());
+                film.setEtatDeptTournage(lieuTournage.getEtatDept().trim());
+                film.setPaysTournage(lieuTournage.getPays().trim());
             }
 
             if (dto.getPays() != null) {
                 film.setPays(toPays(dto.getPays(), caches));
             }
 
-            if (dto.getLangue() != null) {
-                film.setLangue(toLangue(dto.getLangue(), caches));
+            String langue = dto.getLangue();
+            if (langue != null && !langue.trim().equals("None")) {
+                film.setLangue(toLangue(langue, caches));
             }
 
             for (String genre : dto.getGenres()) {
