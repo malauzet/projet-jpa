@@ -186,7 +186,12 @@ dans l'ordre où elles apparaissent dans le fichier :
   car diff manuel confirmé : seuls `url` et `anneeSortie` diffèrent réellement entre doublons, le
   reste (nom, rating, plot, langue, casting) est identique. `toFilm` ne peut donc pas utiliser
   `computeIfAbsent` comme les autres builders (qui ignore le lambda si la clé existe déjà) : il lui
-  faut un `get` explicite puis une branche `if (film == null) {...} else {...}`.
+  faut un `get` explicite puis une branche `if (film == null) {...} else {...}`. Les champs de tournage
+  (`villeTournage`/`etatDeptTournage`/`paysTournage`) sont trimés avant d'être assignés — ajouté à
+  l'étape 24 après avoir constaté que c'étaient les seuls champs texte du mapper à ne pas passer par
+  `dedupe()` (donc sans normalisation), ce qui laissait des espaces superflus sur plus de 2000 films.
+  `langue` est ignorée si elle vaut littéralement `"None"` après trim (14 films) — valeur poison trouvée
+  via phpMyAdmin, sur le même modèle que la garde déjà existante pour `pays`.
 - **`toPersonne`** — dédoublonne par id IMDb. Piège trouvé en testant contre les vraies données :
   `lieuNaissance` est une chaîne *vide* (pas `null`) dans ~10 840 cas ; sans la garde
   `if (lieu != null && !lieu.trim().isEmpty())`, toutes les personnes sans lieu de naissance connu se
@@ -381,6 +386,19 @@ interactif. Ça ne fonctionne correctement que grâce à la construction paresse
   dataset actuel (tous les films ont la clé `anneeSortie`), mais laissé volontairement défensif : même
   famille de bug que les clés `pays`/`langue`/`lieuTournage` manquantes, qui elles se manifestent
   réellement sur ce dataset (voir section suivante).
+- **`villeTournage`/`etatDeptTournage`/`paysTournage` restent des champs texte non structurés, pas
+  toujours fiables** — `paysTournage` contient parfois un état américain ou un code postal au lieu d'un
+  pays (ex. `tt0049038` : `"ID 83340"`, sigle de l'Idaho + zip), et `villeTournage` peut concaténer deux
+  fragments d'adresse avec un double-espace au lieu d'une virgule. Trouvé lors de l'audit de l'étape 24,
+  documenté comme limite connue de la donnée source (perte de structure dès qu'une adresse a plus de 3
+  segments) plutôt que "corrigé" avec une heuristique fragile.
+- **`lieu_naissance` peut contenir plusieurs libellés pour un même lieu réel**, à des niveaux de détail
+  différents (ex. `"Bronx, New York"` vs `"Bronx, New York City, New York, USA"`) — `cleDedoublonnage`
+  ne traite que la casse/les accents/les espaces, pas cette variabilité de granularité. Quantifié à
+  l'étape 24 : 708 groupes avec plusieurs variantes, dont seulement ~184 sont sûrs à fusionner (le reste
+  étant de vrais lieux différents partageant un nom de ville, ex. plusieurs `Moscow`/`Paris`/`Newport`
+  réels). Aucun dédoublonnage automatique supplémentaire tenté — jugé risqué sans un vrai référentiel
+  géographique.
 
 ## 7. Bugs réels trouvés en testant contre les vraies données
 
@@ -428,6 +446,17 @@ etc.). Détail complet, chiffres exacts et diagnostics dans `PLAN.md` (étape 11
     aurait planté. Résolu par construction en limitant la collecte des rôles à `nouveauxFilms` (jamais
     rechargés depuis la base), qui répondait de toute façon déjà à la décision métier voulue (rôles
     persistés seulement pour les films nouveaux).
+12. **`trim()` manquant sur les champs de tournage** (étape 24) : contrairement à tous les autres champs
+    texte du mapper (qui passent par `dedupe()`), `villeTournage`/`etatDeptTournage`/`paysTournage`
+    étaient assignés sans normalisation — plus de 2000 films (sur 2689) avaient des espaces superflus
+    sur au moins une de ces 3 colonnes. Trouvé par un audit comparatif base ↔ JSON, pas par une
+    exception (ce ne sont pas des colonnes soumises à une contrainte unique). Fix : `.trim()` ajouté sur
+    les 3 dans `toFilm`.
+13. **Valeur poison `"None"` dans `langue`** (étape 24) : repérée par l'utilisateur via phpMyAdmin, une
+    ligne de `langue` avait pour `nom` la chaîne littérale `"None"` — `films.json` contient bien
+    `"langue": "None"` sur 14 films, une valeur qui ressemble à une vraie donnée et passait donc à
+    travers la garde existante (qui ne filtre que les clés absentes/vides, bugs #2 ci-dessus). Fix :
+    `toFilm` ignore désormais `langue` si elle vaut `"None"` après trim.
 
 ## 8. Les tests unitaires — `FilmMapperTest` (hors périmètre du projet)
 

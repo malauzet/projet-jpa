@@ -26,24 +26,30 @@ recherche).
 ## Structure du projet
 
 ```
-conception/                          document de conception initial (diagrammes, DDL)
+conception/                         # document de conception initial (diagrammes, DDL)
 sql/
-  schema.sql                         DDL complet (base + 9 tables)
-  reset_db.sql                       vide les données sans toucher au schéma
-src/main/resources/
-  films.json                         dataset source
-  META-INF/persistence.xml           configuration JPA
-src/main/java/fr/diginamic/cinema/
-  entity/                            7 entités JPA
-  persistence/                       EntityManagerProvider
-  dao/                                couche DAO générique + 7 DAOs concrets
-  json/                               DTOs miroir de films.json
-  mapper/                             FilmMapper + DedupCaches (DTO -> entités)
-  service/                            ImportService, RechercheService
-  console/                            Saisie, Affichage, MenuActions
-  app/                                 ImportApp, MenuApp (points d'entrée)
-src/test/java/fr/diginamic/cinema/
-  mapper/                              FilmMapperTest (tests unitaires, hors périmètre)
+├── schema.sql                      # DDL complet (base + 9 tables)
+└── reset_db.sql                    # vide les données sans toucher au schéma
+docs/screenshots/                   # captures d'écran utilisées dans le README
+src/
+├── main/
+│   ├── resources/
+│   │   ├── films.json              # dataset source (~21.7 Mo, 2748 films)
+│   │   └── META-INF/
+│   │       └── persistence.xml     # configuration JPA
+│   └── java/fr/diginamic/cinema/
+│       ├── entity/                 # 7 entités JPA
+│       ├── persistence/            # EntityManagerProvider
+│       ├── dao/                    # couche DAO générique + 7 DAOs concrets
+│       ├── json/                   # DTOs miroir de films.json
+│       ├── mapper/                 # FilmMapper + DedupCaches (DTO -> entités)
+│       ├── service/                # ImportService, RechercheService
+│       ├── console/                # Saisie, Affichage, MenuActions
+│       └── app/                    # ImportApp, MenuApp (points d'entrée)
+└── test/java/fr/diginamic/cinema/
+    └── mapper/                     # FilmMapperTest (tests unitaires, hors périmètre)
+docker-compose.yml                  # MariaDB conteneurisée (+ auto-init de sql/schema.sql)
+.github/workflows/ci.yml            # CI GitHub Actions (mvn test)
 ```
 
 ## Prérequis
@@ -53,6 +59,8 @@ src/test/java/fr/diginamic/cinema/
 - Une base MariaDB accessible sur `localhost:3306`, au choix :
   - **Docker** (recommandé) — voir la section suivante.
   - **Installation manuelle** (ex. via XAMPP).
+  - ⚠️ Ne pas laisser les deux tourner en même temps : deux serveurs MariaDB qui écoutent sur le même
+    port 3306 ne préviennent d'aucune erreur, l'appli se connecte simplement à l'un des deux au hasard.
 - Un fichier `.env` à la racine (copier `.env.example` puis renseigner `DB_USER`/`DB_PASSWORD`) —
   voir "Mise en place de la base de données" ci-dessous.
 
