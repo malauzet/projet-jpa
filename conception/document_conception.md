@@ -13,6 +13,8 @@ Le fichier `films.json` contient 2748 films. Analyse de la structure :
   - 102 `anneeSortie` sous forme de plage (ex : `"1969-1970"`) au lieu d'une année unique → modélise en `anneeDebut`/`anneeFin`.
   - Champs optionnels : `langue` absent sur 19 entrées, `rating` sur 46, `pays` sur 18, `lieuTournage` sur 589.
   - Éspaces parasites en fin de chaine sur `dateNaissance` et `lieuNaissance` -> `trim()` au parsing.
+  - Valeur poison `"None"` dans `langue` (14 films) -> distincte d'une clé absente, filtrée explicitement au parsing.
+  - `lieuTournage.pays` n'est pas toujours un vrai pays (ex. `"ID 83340"` = sigle de l'Idaho + code postal) et `lieuTournage.ville` peut concaténer deux fragments d'adresse sans virgule -> ces 3 champs restent du texte libre stocké tel quel (après `trim()`), sans garantie de fiabilité au-delà.
 - **Acteurs et réalisateurs** : même structure de données (`id`, `identite`, `url`, `naissance`), et une même personne peut apparaitre dans les deux rôles selon les films. Modélisées comme une seule entité `Personne`.
 - **`lieuTournage`** : structure ville/etatDept/pays propre à chaque film, sans contrainte d'unicité demandée et sans réutilisation entre films → modélise en attributs embarqués dans `Film`, pas en entité à part.
 - **`castingPrincipal`** : sert à déterminer `Role.principal` au parsing (`true` si l'id de l'acteur apparaît dans `castingPrincipal` pour ce film). Pas repris comme structure à part — les données de casting restent centralisées dans `roles`/`ROLE`.

@@ -27,6 +27,8 @@ public class FilmMapper {
      * Sur un doublon (même id déjà vu, les ~38 ids dupliqués du JSON source, correspondant à des séries/shows scrapés une fois par acteur),
      * seul l'intervalle d'années est élargi (anneeDebut = min, anneeFin = max des valeurs vues),
      * les autres champs de l'occurrence en doublon sont ignorés.
+     * Les champs de tournage (ville/etatDept/pays) sont trimés avant d'être assignés,
+     * et une langue valant littéralement "None" est ignorée (valeur poison trouvée dans le JSON source).
      *
      * @param dto    film brut tel qu'écrit dans le JSON
      * @param caches caches de dédoublonnage de l'import en cours, le film est ajouté à caches.films au premier passage.

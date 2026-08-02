@@ -272,6 +272,37 @@ public class FilmMapperTest {
         assertNull(film.getVilleTournage());
     }
 
+    @Test
+    @DisplayName("toFilm : les champs de tournage sont trimés avant d'être assignés")
+    void toFilm_lieuTournage_trimApplique() {
+        DedupCaches caches = new DedupCaches();
+        FilmJson dto = creerFilmJson("tt0006", "Film avec tournage", "2000");
+
+        LieuTournageJson lieuTournage = new LieuTournageJson();
+        lieuTournage.setVille(" Hollywood ");
+        lieuTournage.setEtatDept(" California");
+        lieuTournage.setPays(" USA");
+        dto.setLieuTournage(lieuTournage);
+
+        Film film = FilmMapper.toFilm(dto, caches);
+
+        assertEquals("Hollywood", film.getVilleTournage());
+        assertEquals("California", film.getEtatDeptTournage());
+        assertEquals("USA", film.getPaysTournage());
+    }
+
+    @Test
+    @DisplayName("toFilm : langue valant \"None\" est ignorée")
+    void toFilm_langueNone_estIgnoree() {
+        DedupCaches caches = new DedupCaches();
+        FilmJson dto = creerFilmJson("tt0007", "Film sans langue connue", "2000");
+        dto.setLangue("None");
+
+        Film film = FilmMapper.toFilm(dto, caches);
+
+        assertNull(film.getLangue());
+    }
+
 
     // --- toPersonne : garde sur lieuNaissance vide ---
 
